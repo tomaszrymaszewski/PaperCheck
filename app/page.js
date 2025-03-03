@@ -1083,25 +1083,28 @@ export default function MathCheck() {
         
         {/* Insights Tab */}
         {activeTab === 'insights' && (
-            <div>
-                <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold flex items-center">
-                    <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 012 2v14a2 2 0 01-2 2h-2a2 2 01-2-2z" />
-                    </svg>
-                    Performance Insights
-                </h2>
-                <div>
-                    <select className="bg-[#2c3542] text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="all">All Time</option>
-                    <option value="3months">Last 3 Months</option>
-                    <option value="month">Last Month</option>
-                    <option value="week">Last Week</option>
-                    </select>
-                </div>
-                </div>
-            </div> {/* This was missing */}
-            )}
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold flex items-center">
+                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 012 2v14a2 2 0 01-2 2h-2a2 2 01-2-2z" />
+                </svg>
+                Performance Insights
+              </h2>
+              <div>
+                <select className="bg-[#2c3542] text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="all">All Time</option>
+                  <option value="3months">Last 3 Months</option>
+                  <option value="month">Last Month</option>
+                  <option value="week">Last Week</option>
+                </select>
+              </div>
+            </div>
+        
+            {/* Close div properly */}
+          </div> 
+        )}
+
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-[#1e2d3d] p-6 rounded-lg">
