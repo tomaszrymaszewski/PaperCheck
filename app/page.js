@@ -120,9 +120,9 @@ export default function PaperCheck() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold mb-4">Paper Submitted Successfully!</h2>
-            <p className="text-gray-300 mb-6">
-              We've received your {exam.toLowerCase()} for {moduleOptions[parseInt(module)] || module}. 
-              You'll receive feedback within 24 hours.
+                          <p className="text-gray-300 mb-6">
+              We&apos;ve received your {exam.toLowerCase()} for {moduleOptions[parseInt(module)] || module}. 
+              You&apos;ll receive feedback within 24 hours.
             </p>
             <button
               onClick={resetForm}
