@@ -1079,6 +1079,7 @@ export default function MathCheck() {
               </div>
             </div>
           </div>
+        </div>
         )}
         
         {/* Insights Tab */}
@@ -1270,6 +1271,7 @@ export default function MathCheck() {
               </div>
             </div>
           </div>
+        </div>
         )}
       </main>
 
