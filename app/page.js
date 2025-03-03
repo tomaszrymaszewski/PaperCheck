@@ -973,7 +973,7 @@ export default function MathCheck() {
                   </svg>
                 </div>
             </div>
-            
+          <div>  
             <div className="bg-[#1e2d3d] overflow-hidden rounded-lg mb-8">
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-700">
