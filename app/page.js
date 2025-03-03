@@ -1269,11 +1269,11 @@ export default function MathCheck() {
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
+           </div>
         </div>
-        )}
-      </main>
+      </div>
+    )}
+  </main>
 
       {/* Footer */}
       <footer className="bg-[#1a1a1a] py-8 border-t border-gray-800 mt-12">
