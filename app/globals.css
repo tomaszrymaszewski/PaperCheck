@@ -6,16 +6,154 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 26, 26, 26;
   --background-end-rgb: 18, 18, 18;
+  
+  /* Primary colors */
+  --primary-50: 236, 240, 255;
+  --primary-100: 179, 209, 255;
+  --primary-200: 128, 179, 255;
+  --primary-300: 77, 148, 255;
+  --primary-400: 26, 117, 255;
+  --primary-500: 0, 102, 255;
+  --primary-600: 0, 82, 204;
+  --primary-700: 0, 61, 153;
+  --primary-800: 0, 41, 102;
+  --primary-900: 0, 20, 51;
+  
+  /* Secondary colors */
+  --success-rgb: 34, 197, 94;
+  --warning-rgb: 234, 179, 8;
+  --error-rgb: 239, 68, 68;
+  --info-rgb: 59, 130, 246;
+  
+  /* UI colors */
+  --dark-panel: 30, 45, 61;
+  --darker-panel: 28, 41, 55;
+  --subtle-border: 55, 65, 81;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
-  min-height: 100vh;
+@layer base {
+  body {
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+    min-height: 100vh;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Better focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-black;
+  }
+}
+
+@layer components {
+  /* Button styles */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#2c3542] hover:bg-[#3c4552] text-white px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  .btn-success {
+    @apply bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  /* Panel styles */
+  .panel {
+    @apply bg-[#1e2d3d] rounded-lg p-6;
+  }
+  
+  .panel-darker {
+    @apply bg-[#2c3542] rounded-lg p-6;
+  }
+  
+  /* Form controls */
+  .form-input {
+    @apply bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full;
+  }
+  
+  .form-select {
+    @apply bg-[#2c3542] text-gray-300 p-3 rounded-md appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 w-full;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply bg-[#1e2d3d] p-6 rounded-lg transition-all duration-300;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1;
+  }
+}
+
+@layer utilities {
+  /* Custom opacity utilities for background colors */
+  .bg-opacity-10 {
+    --tw-bg-opacity: 0.1;
+  }
+  
+  .bg-opacity-20 {
+    --tw-bg-opacity: 0.2;
+  }
+  
+  /* Custom background utilities with alpha channel */
+  .bg-blue-500\/10 {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  .bg-blue-500\/20 {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  .bg-green-500\/10 {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  
+  .bg-green-500\/20 {
+    background-color: rgba(34, 197, 94, 0.2);
+  }
+  
+  .bg-red-500\/10 {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .bg-red-500\/20 {
+    background-color: rgba(239, 68, 68, 0.2);
+  }
+  
+  .bg-purple-500\/10 {
+    background-color: rgba(168, 85, 247, 0.1);
+  }
+  
+  .bg-purple-500\/20 {
+    background-color: rgba(168, 85, 247, 0.2);
+  }
+  
+  .bg-yellow-500\/10 {
+    background-color: rgba(234, 179, 8, 0.1);
+  }
+  
+  .bg-yellow-500\/20 {
+    background-color: rgba(234, 179, 8, 0.2);
+  }
+  
+  /* Text gradient utilities */
+  .text-gradient-blue {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600;
+  }
+  
+  .text-gradient-green {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-emerald-600;
+  }
 }
 
 /* Custom scrollbar */
@@ -35,4 +173,38 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #4c5562;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in-out;
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out;
+}
+
+/* Better form controls for dark mode */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(156, 163, 175, 0.65);
+}
+
+/* Better focus rings for dark backgrounds */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
 }
