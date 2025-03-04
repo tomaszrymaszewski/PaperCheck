@@ -18,6 +18,7 @@ export default function MathCheck() {
   const [activeTab, setActiveTab] = useState('upload');
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
+  const [alert, setAlert] = useState({ message: '', type: '', visible: false });
 
   // Math modules
   const moduleOptions = ['Algebra', 'Calculus', 'Statistics', 'Geometry', 'Linear Algebra', 'Number Theory'];
@@ -104,8 +105,6 @@ export default function MathCheck() {
   };
 
   // Show alert message
-  const [alert, setAlert] = useState({ message: '', type: '', visible: false });
-
   const showAlert = (message, type = 'info') => {
     setAlert({ message, type, visible: true });
     setTimeout(() => {
@@ -220,23 +219,7 @@ export default function MathCheck() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Welcome to MathCheck</h4>
-                                              <p className="text-center mb-2 font-medium">Drag and Drop your paper here</p>
-                          <p className="text-gray-500 text-sm mb-4">Supported Format: PDF</p>
-
-                          <label className="bg-blue-600 text-white px-5 py-2 rounded-md cursor-pointer hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
-                            Browse Files
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept="application/pdf"
-                              onChange={handleFileChange}
-                            />
-                          </label>
-
-                          <p className="text-gray-500 text-sm mt-4 text-center">
-                            For best results, ensure that your mathematical notation is clear and legible.<br />
-                            Our AI can recognize both handwritten and typed mathematics.
-                          </p>
+                    <p className="text-gray-300">MathCheck uses advanced AI to analyze your math papers, identify errors, and provide detailed feedback to help you improve your understanding.</p>
                   </div>
                 </div>
                 <img
@@ -247,74 +230,7 @@ export default function MathCheck() {
               </div>
             )}
 
-            {tutorialStep === 1 && (
-              <div>
-                <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
-                  <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg mb-1">Upload Your Paper</h4>
-                    <p className="text-gray-300">Select your math module, exam type, and upload your paper in PDF format. Ensure your handwriting is clear or that your typed document uses standard mathematical notation.</p>
-                  </div>
-                </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Uploading Paper"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
-              </div>
-            )}
-
-            {tutorialStep === 2 && (
-              <div>
-                <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
-                  <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg mb-1">Receive Detailed Analysis</h4>
-                    <p className="text-gray-300">Our AI engine will analyze your paper and provide insights into your strengths, areas for improvement, and specific feedback on mathematical concepts.</p>
-                  </div>
-                </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Analysis Results"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
-              </div>
-            )}
-
-            {tutorialStep === 3 && (
-              <div>
-                <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
-                  <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-lg mb-1">Track Your Progress</h4>
-                    <p className="text-gray-300">View your submission history, track your improvement over time, and access previous analyses to see how your mathematical skills are developing.</p>
-                  </div>
-                </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Progress Tracking"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
-
-                <div className="bg-green-500/10 p-4 rounded-md mb-4">
-                  <p className="text-green-400 font-medium">You&apos;re all set! Start by uploading your first math paper for analysis.</p>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-4">
               {tutorialStep > 0 ? (
                 <button
                   onClick={() => setTutorialStep(prev => prev - 1)}
@@ -346,95 +262,237 @@ export default function MathCheck() {
         </div>
       )}
 
-      {/* Preview Modal */}
-      {showPreview && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-40">
-          <div className="bg-[#2c3542] p-6 rounded-lg max-w-3xl w-full mx-4 relative">
-            <h2 className="text-xl font-bold mb-6 flex items-center">
-              <svg className="w-6 h-6 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Preliminary Analysis in Progress
-              <div className="ml-3 flex items-center text-sm text-green-400">
-                <span className="relative flex h-3 w-3 mr-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-                Processing...
-              </div>
-            </h2>
-
-            <div className="mb-6">
-              <div className="h-2 w-full bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 animate-pulse" style={{ width: '60%' }}></div>
-              </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
-                <span>Uploading</span>
-                <span>Analyzing</span>
-                <span>Generating Feedback</span>
-              </div>
+      {/* Header */}
+      <header className="bg-[#1c1c1c] border-b border-gray-800">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="text-2xl font-bold text-blue-500">Math</div>
+              <div className="text-2xl font-bold">Check</div>
+              <div className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">PRO</div>
             </div>
 
-            <div className="mb-6">
-              <div className="p-4 bg-blue-500/10 rounded-md mb-4">
-                <h3 className="font-medium mb-2">Document Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-gray-400 text-sm">Module:</p>
-                    <p>{moduleOptions[parseInt(module)] || 'Mathematics'}</p>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowTutorial(true)}
+                className="text-gray-300 hover:text-white hidden md:flex items-center"
+              >
+                <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                Tutorial
+              </button>
+              <div className="relative group">
+                <button className="bg-[#2c3542] p-2 rounded-full text-white">
+                  {user ? (
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  )}
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-[#2c3542] rounded-md shadow-lg overflow-hidden z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <div className="p-3 border-b border-gray-700">
+                    <p className="font-semibold">{user?.name || 'User'}</p>
+                    <p className="text-sm text-gray-400 truncate">{user?.email || 'user@example.com'}</p>
                   </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Exam Type:</p>
-                    <p>{exam}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">File:</p>
-                    <p>{file?.name || 'document.pdf'}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Pages:</p>
-                    <p>Detecting...</p>
+                  <div className="p-2">
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-[#3c4552] rounded-md flex items-center text-red-400"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Sign Out
+                    </button>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </header>
 
-              <div className="p-4 bg-green-500/10 rounded-md mb-4">
-                <h3 className="font-medium text-green-400 mb-2">Initial Detection</h3>
-                <ul className="space-y-1 text-sm">
-                  <li className="flex items-center">
-                    <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Mathematical notation recognized
-                  </li>
-                  <li className="flex items-center">
-                    <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Equations and formulas detected
-                  </li>
-                  <li className="flex items-center">
-                    <svg className="w-4 h-4 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    Potential calculation errors found
-                  </li>
-                </ul>
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto p-4 md:p-8">
+        {/* Welcome message */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-2">
+            {user ? `Welcome back, ${user.name}!` : 'Welcome to MathCheck!'}
+          </h1>
+          <p className="text-gray-400">Upload your math papers for AI-powered analysis and detailed feedback</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-6 border-b border-gray-800">
+          <div className="flex space-x-6">
+            <button
+              onClick={() => setActiveTab('upload')}
+              className={`pb-3 px-1 flex items-center ${
+                activeTab === 'upload'
+                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              Upload Paper
+            </button>
+            <button
+              onClick={() => setActiveTab('history')}
+              className={`pb-3 px-1 flex items-center ${
+                activeTab === 'history'
+                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              History
+            </button>
+            <button
+              onClick={() => setActiveTab('insights')}
+              className={`pb-3 px-1 flex items-center ${
+                activeTab === 'insights'
+                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Insights
+            </button>
+          </div>
+        </div>
+
+        {/* Upload Tab */}
+        {activeTab === 'upload' && (
+          <div className="bg-[#1e2d3d] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-4">Upload Your Math Paper</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="relative">
+                <label className="block text-sm text-gray-400 mb-2">Mathematics Module</label>
+                <select
+                  className="w-full bg-[#2c3542] text-gray-300 p-3 rounded-md"
+                  value={module}
+                  onChange={(e) => setModule(e.target.value)}
+                >
+                  <option value="" disabled>Select Module</option>
+                  {moduleOptions.map((mod, index) => (
+                    <option key={index} value={index}>{mod}</option>
+                  ))}
+                </select>
               </div>
-
-              <p className="text-center text-sm text-gray-400">
-                Full analysis will be ready in approximately {getRandomTime()} seconds...
-              </p>
+              
+              <div className="relative">
+                <label className="block text-sm text-gray-400 mb-2">Exam Type</label>
+                <select
+                  className="w-full bg-[#2c3542] text-gray-300 p-3 rounded-md"
+                  value={exam}
+                  onChange={(e) => setExam(e.target.value)}
+                >
+                  <option value="" disabled>Select Exam</option>
+                  <option value="midterm">Midterm</option>
+                  <option value="final">Final Exam</option>
+                  <option value="quiz">Quiz</option>
+                  <option value="homework">Homework</option>
+                </select>
+              </div>
             </div>
-
-            <div className="text-center">
-              <button
-                onClick={() => setShowPreview(false)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 inline-flex items-center"
-              >
-                Continue in Background
-                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+            
+            <div className="mb-6">
+              {file ? (
+                <div className="bg-[#2c3542] p-4 rounded-md">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <svg className="w-8 h-8 text-blue-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <div>
+                        <p className="font-medium">{file.name}</p>
+                        <p className="text-gray-400 text-sm">{formatFileSize(file.size)}</p>
+                      </div>
+                    </div>
+                    <button onClick={removeFile} className="text-gray-400 hover:text-red-500">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center ${
+                    isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-gray-600'
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <svg className="w-16 h-16 text-blue-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                  <p className="text-center mb-2 font-medium">Drag and Drop your paper here</p>
+                  <p className="text-gray-500 text-sm mb-4">Supported Format: PDF</p>
+                  
+                  <label className="bg-blue-600 text-white px-5 py-2 rounded-md cursor-pointer hover:bg-blue-700">
+                    Browse Files
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="application/pdf"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                </div>
+              )}
             </div>
+            
+            <button
+              onClick={handleSubmit}
+              disabled={!module || !exam || !file || isSubmitting}
+              className={`w-full p-4 rounded-md font-semibold ${
+                !module || !exam || !file
+                ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Analyzing... {uploadProgress}%
+                </span>
+              ) : (
+                <span>Analyze Math Paper</span>
+              )}
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* Simplified Footer */}
+      <footer className="bg-[#1a1a1a] py-6 border-t border-gray-800 mt-12">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <div className="text-xl font-bold text-blue-500">Math</div>
+              <div className="text-xl font-bold">Check</div>
+            </div>
+            <p className="text-gray-500 text-sm">© 2025 MathCheck. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
