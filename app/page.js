@@ -1312,7 +1312,6 @@ export default function MathCheck() {
               <ul className="space-y-2">
                 <li><a href="#" className="text-gray-400 hover:text-blue-500">Home</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-blue-500">About Us</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-blue-500">Pricing</a></li>
                 <li><a href="#" className="text-gray-400 hover:text-blue-500">Contact</a></li>
               </ul>
             </div>
