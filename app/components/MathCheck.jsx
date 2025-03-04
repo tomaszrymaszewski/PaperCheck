@@ -1,41 +1,52 @@
-'use client';
+import React, { useState, useEffect, useRef } from "react";
+import { useAuth } from "./AuthContext";
+import {
+  Upload,
+  Clock,
+  BarChart2,
+  FileText,
+  Info,
+  X,
+  CheckCircle,
+  AlertCircle,
+  Book,
+} from "lucide-react";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-
-export default function MathCheck() {
+const MathCheck = () => {
   const { user, logout } = useAuth();
   
   // Form state
-  const [module, setModule] = useState('');
-  const [exam, setExam] = useState('');
+  const [module, setModule] = useState("");
+  const [exam, setExam] = useState("");
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [activeTab, setActiveTab] = useState('upload');
-  const [userName, setUserName] = useState('');
+  const [activeTab, setActiveTab] = useState("upload");
+  const [userName, setUserName] = useState("");
   const [isNameModalOpen, setIsNameModalOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
-
+  const fileInputRef = useRef(null);
+  
   // Math modules
-  const moduleOptions = ['P1', 'P2', 'P3', 'P4', 'S1', 'S2', 'S3', 'M1', 'M2', 'FP1', 'FP2'];
-  const dateOptions = ['June 2019', 'October 2019',
-    'January 2020', 'June 2020', 'October 2020',
-    'January 2021', 'June 2021', 'October 2021',
-    'January 2022', 'June 2022', 'October 2022',
-    'January 2023', 'June 2023', 'October 2023',
-    'January 2024', 'June 2024', 'October 2024',
+  const moduleOptions = ["P1", "P2", "P3", "P4", "S1", "S2", "S3", "M1", "M2", "FP1", "FP2"];
+  const dateOptions = [
+    "June 2019", "October 2019",
+    "January 2020", "June 2020", "October 2020",
+    "January 2021", "June 2021", "October 2021",
+    "January 2022", "June 2022", "October 2022",
+    "January 2023", "June 2023", "October 2023",
+    "January 2024", "June 2024", "October 2024",
   ];
 
   // Recent submissions mock data
   const recentSubmissions = [
-    { id: 'MC-2025-001', module: 'P2', exam: 'June 2019', date: '02 Mar 2025', score: 85 },
-    { id: 'MC-2025-002', module: 'M1', exam: 'January 2023', date: '28 Feb 2025', score: 92 },
-    { id: 'MC-2025-003', module: 'S1', exam: 'January 2024', date: '25 Feb 2025', score: 78 },
+    { id: "MC-2025-001", module: "P2", exam: "June 2019", date: "02 Mar 2025", score: 85 },
+    { id: "MC-2025-002", module: "M1", exam: "January 2023", date: "28 Feb 2025", score: 92 },
+    { id: "MC-2025-003", module: "S1", exam: "January 2024", date: "25 Feb 2025", score: 78 },
   ];
 
   // Sample feedback data
@@ -60,7 +71,7 @@ export default function MathCheck() {
 
   // Check for saved name on component mount
   useEffect(() => {
-    const savedName = localStorage.getItem('mathCheckUserName');
+    const savedName = localStorage.getItem("mathCheckUserName");
     if (savedName) {
       setUserName(savedName);
     } else {
@@ -68,7 +79,7 @@ export default function MathCheck() {
     }
 
     // Show tutorial for first-time users
-    const tutorialSeen = localStorage.getItem('mathCheckTutorialSeen');
+    const tutorialSeen = localStorage.getItem("mathCheckTutorialSeen");
     if (!tutorialSeen) {
       setTimeout(() => setShowTutorial(true), 1500);
     }
@@ -77,14 +88,14 @@ export default function MathCheck() {
   // Save name to localStorage
   const saveName = () => {
     if (userName.trim()) {
-      localStorage.setItem('mathCheckUserName', userName);
+      localStorage.setItem("mathCheckUserName", userName);
       setIsNameModalOpen(false);
     }
   };
 
   // Complete tutorial
   const completeTutorial = () => {
-    localStorage.setItem('mathCheckTutorialSeen', 'true');
+    localStorage.setItem("mathCheckTutorialSeen", "true");
     setShowTutorial(false);
   };
 
@@ -104,10 +115,10 @@ export default function MathCheck() {
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.type === 'application/pdf') {
+      if (droppedFile.type === "application/pdf") {
         setFile(droppedFile);
       } else {
-        showAlert('Only PDF files are supported', 'error');
+        showAlert("Only PDF files are supported", "error");
       }
     }
   };
@@ -115,10 +126,10 @@ export default function MathCheck() {
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
-      if (selectedFile.type === 'application/pdf') {
+      if (selectedFile.type === "application/pdf") {
         setFile(selectedFile);
       } else {
-        showAlert('Only PDF files are supported', 'error');
+        showAlert("Only PDF files are supported", "error");
       }
     }
   };
@@ -128,9 +139,9 @@ export default function MathCheck() {
   };
 
   // Show alert message
-  const [alert, setAlert] = useState({ message: '', type: '', visible: false });
+  const [alert, setAlert] = useState({ message: "", type: "", visible: false });
 
-  const showAlert = (message, type = 'info') => {
+  const showAlert = (message, type = "info") => {
     setAlert({ message, type, visible: true });
     setTimeout(() => {
       setAlert(prev => ({ ...prev, visible: false }));
@@ -163,7 +174,7 @@ export default function MathCheck() {
 
   const handleSubmit = () => {
     if (!module || !exam || !file) {
-      showAlert('Please fill all fields and upload a file', 'error');
+      showAlert("Please fill all fields and upload a file", "error");
       return;
     }
 
@@ -173,18 +184,18 @@ export default function MathCheck() {
   };
 
   const resetForm = () => {
-    setModule('');
-    setExam('');
+    setModule("");
+    setExam("");
     setFile(null);
     setShowSuccess(false);
-    setActiveTab('upload');
+    setActiveTab("upload");
   };
 
   // Format file size
   const formatFileSize = (bytes) => {
-    if (bytes < 1024) return bytes + ' bytes';
-    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    else return (bytes / 1048576).toFixed(2) + ' MB';
+    if (bytes < 1024) return bytes + " bytes";
+    else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    else return (bytes / 1048576).toFixed(2) + " MB";
   };
 
   // Generate a random time left
@@ -197,7 +208,7 @@ export default function MathCheck() {
       {/* Alert notification */}
       {alert.visible && (
         <div className={`fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 transition-all duration-300 ${
-          alert.type === 'error' ? 'bg-red-500' : 'bg-green-500'
+          alert.type === "error" ? "bg-red-500" : "bg-green-500"
         }`}>
           {alert.message}
         </div>
@@ -235,9 +246,7 @@ export default function MathCheck() {
               onClick={() => setShowTutorial(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <X className="w-5 h-5" />
             </button>
 
             <div className="mb-4">
@@ -257,9 +266,7 @@ export default function MathCheck() {
               <div>
                 <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
                   <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <Info className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Welcome to MathCheck</h4>
@@ -273,9 +280,7 @@ export default function MathCheck() {
               <div>
                 <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
                   <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <FileText className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Upload Your Paper</h4>
@@ -289,9 +294,7 @@ export default function MathCheck() {
               <div>
                 <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
                   <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
+                    <BarChart2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Receive Detailed Analysis</h4>
@@ -305,9 +308,7 @@ export default function MathCheck() {
               <div>
                 <div className="bg-blue-500/10 p-4 rounded-md mb-4 flex items-start">
                   <div className="bg-blue-500 p-2 rounded-full mr-3 shrink-0">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg mb-1">Track Your Progress</h4>
@@ -316,7 +317,7 @@ export default function MathCheck() {
                 </div>
 
                 <div className="bg-green-500/10 p-4 rounded-md mb-4">
-                  <p className="text-green-400 font-medium">You&apos;re all set! Start by uploading your first math paper for analysis.</p>
+                  <p className="text-green-400 font-medium">You're all set! Start by uploading your first math paper for analysis.</p>
                 </div>
               </div>
             )}
@@ -358,9 +359,7 @@ export default function MathCheck() {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-40">
           <div className="bg-[#2c3542] p-6 rounded-lg max-w-3xl w-full mx-4 relative">
             <h2 className="text-xl font-bold mb-6 flex items-center">
-              <svg className="w-6 h-6 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+              <FileText className="w-6 h-6 text-blue-400 mr-2" />
               Preliminary Analysis in Progress
               <div className="ml-3 flex items-center text-sm text-green-400">
                 <span className="relative flex h-3 w-3 mr-2">
@@ -373,7 +372,7 @@ export default function MathCheck() {
 
             <div className="mb-6">
               <div className="h-2 w-full bg-gray-700 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 animate-pulse" style={{ width: '60%' }}></div>
+                <div className="h-full bg-blue-500 animate-pulse" style={{ width: "60%" }}></div>
               </div>
               <div className="flex justify-between text-xs text-gray-400 mt-1">
                 <span>Uploading</span>
@@ -388,7 +387,7 @@ export default function MathCheck() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-400 text-sm">Module:</p>
-                    <p>{moduleOptions[module] || 'Mathematics'}</p>
+                    <p>{moduleOptions[module] || "Mathematics"}</p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Exam Type:</p>
@@ -396,7 +395,7 @@ export default function MathCheck() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">File:</p>
-                    <p>{file?.name || 'document.pdf'}</p>
+                    <p>{file?.name || "document.pdf"}</p>
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Pages:</p>
@@ -409,21 +408,15 @@ export default function MathCheck() {
                 <h3 className="font-medium text-green-400 mb-2">Initial Detection</h3>
                 <ul className="space-y-1 text-sm">
                   <li className="flex items-center">
-                    <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
                     Mathematical notation recognized
                   </li>
                   <li className="flex items-center">
-                    <svg className="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
                     Equations and formulas detected
                   </li>
                   <li className="flex items-center">
-                    <svg className="w-4 h-4 text-yellow-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
+                    <AlertCircle className="w-4 h-4 text-yellow-500 mr-2" />
                     Potential calculation errors found
                   </li>
                 </ul>
@@ -496,7 +489,7 @@ export default function MathCheck() {
         {/* Welcome message */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold mb-2">
-            {userName ? `Welcome back, ${userName}!` : 'Welcome to MathCheck!'}
+            {userName ? `Welcome back, ${userName}!` : "Welcome to MathCheck!"}
           </h1>
           <p className="text-gray-400">Upload your math papers for AI-powered analysis and detailed feedback</p>
         </div>
@@ -505,70 +498,60 @@ export default function MathCheck() {
         <div className="mb-6 border-b border-gray-800">
           <div className="flex space-x-6">
             <button
-              onClick={() => setActiveTab('upload')}
+              onClick={() => setActiveTab("upload")}
               className={`pb-3 px-1 flex items-center ${
-                activeTab === 'upload'
-                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
-                  : 'text-gray-400 hover:text-gray-300'
+                activeTab === "upload"
+                  ? "text-blue-500 border-b-2 border-blue-500 font-medium"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
+              <Upload className="w-5 h-5 mr-2" />
               Upload Paper
             </button>
             <button
-              onClick={() => setActiveTab('history')}
+              onClick={() => setActiveTab("history")}
               className={`pb-3 px-1 flex items-center ${
-                activeTab === 'history'
-                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
-                  : 'text-gray-400 hover:text-gray-300'
+                activeTab === "history"
+                  ? "text-blue-500 border-b-2 border-blue-500 font-medium"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <Clock className="w-5 h-5 mr-2" />
               History
             </button>
             <button
-              onClick={() => setActiveTab('insights')}
+              onClick={() => setActiveTab("insights")}
               className={`pb-3 px-1 flex items-center ${
-                activeTab === 'insights'
-                  ? 'text-blue-500 border-b-2 border-blue-500 font-medium'
-                  : 'text-gray-400 hover:text-gray-300'
+                activeTab === "insights"
+                  ? "text-blue-500 border-b-2 border-blue-500 font-medium"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
+              <BarChart2 className="w-5 h-5 mr-2" />
               Insights
             </button>
           </div>
         </div>
 
         {/* Upload Tab */}
-        {activeTab === 'upload' && (
+        {activeTab === "upload" && (
           <div>
             {showSuccess ? (
               <div className="bg-[#1e2d3d] p-8 rounded-lg overflow-hidden">
                 <div className="text-center mb-8">
                   <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <CheckCircle className="w-12 h-12 text-white" />
                   </div>
                   <h2 className="text-2xl font-bold mb-2">Analysis Complete!</h2>
                   <p className="text-gray-300">
-                    We&apos;ve analyzed your {exam.toLowerCase()} for {moduleOptions[parseInt(module)] || 'Mathematics'}.
+                    We've analyzed your {exam.toLowerCase()} for {moduleOptions[parseInt(module)] || "Mathematics"}.
                   </p>
                 </div>
 
                 <div className="bg-[#2c3542] p-6 rounded-lg mb-8">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center">
-                      <svg className="w-6 h-6 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                      <CheckCircle className="w-6 h-6 text-blue-400 mr-2" />
                       <h3 className="text-xl font-semibold">Analysis Results</h3>
                     </div>
                     <div className="bg-blue-500/20 px-3 py-1 rounded-full flex items-center">
@@ -582,9 +565,7 @@ export default function MathCheck() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                       <h4 className="flex items-center text-green-400 mb-3">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
+                        <CheckCircle className="w-5 h-5 mr-2" />
                         Strengths
                       </h4>
                       <ul className="space-y-2">
@@ -599,10 +580,8 @@ export default function MathCheck() {
 
                     <div>
                       <h4 className="flex items-center text-red-400 mb-3">
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        Areas for Improvement
+                        <AlertCircle className="w-5 h-5 mr-2" />
+                        Areas to Improve
                       </h4>
                       <ul className="space-y-2">
                         {sampleFeedback.weaknesses.map((weakness, i) => (
@@ -617,9 +596,7 @@ export default function MathCheck() {
 
                   <div className="mb-6">
                     <h4 className="flex items-center text-blue-400 mb-3">
-                      <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                      </svg>
+                      <Book className="w-5 h-5 mr-2" />
                       Tips for Improvement
                     </h4>
                     <ul className="space-y-2">
@@ -664,9 +641,7 @@ export default function MathCheck() {
                     onClick={resetForm}
                     className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-all duration-300 flex-1 flex items-center justify-center"
                   >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
+                    <Upload className="w-5 h-5 mr-2" />
                     Submit Another Paper
                   </button>
                   <button
@@ -711,9 +686,9 @@ export default function MathCheck() {
                           value={exam}
                           onChange={(e) => setExam(e.target.value)}
                         >
-                          <option value="" disabled>Select Module</option>
-                          {dateOptions.map((mod, index) => (
-                              <option key={index} value={index}>{mod}</option>
+                          <option value="" disabled>Select Exam</option>
+                          {dateOptions.map((option, index) => (
+                            <option key={index} value={option}>{option}</option>
                           ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 top-6">
@@ -728,9 +703,7 @@ export default function MathCheck() {
                     <div className="mb-6">
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold flex items-center">
-                          <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                          </svg>
+                          <Upload className="w-5 h-5 text-blue-500 mr-2" />
                           Upload Your Paper
                         </h2>
                         <span className="text-gray-400 text-sm">PDF files only (max 10MB)</span>
@@ -741,11 +714,7 @@ export default function MathCheck() {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               <div className="bg-blue-500/20 p-3 rounded-md mr-4">
-                                <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                  />
-                                </svg>
+                                <FileText className="w-8 h-8 text-blue-500" />
                               </div>
                               <div>
                                 <p className="font-medium truncate max-w-xs">{file.name}</p>
@@ -756,30 +725,21 @@ export default function MathCheck() {
                               onClick={removeFile}
                               className="text-gray-400 hover:text-red-500 p-2"
                             >
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                              </svg>
+                              <X className="w-5 h-5" />
                             </button>
                           </div>
                         </div>
                       ) : (
                         <div
                           className={`border-2 border-dashed rounded-lg p-8 flex flex-col items-center justify-center transition-all duration-300 ${
-                            isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-gray-600 hover:border-gray-500 hover:bg-[#22293a]'
+                            isDragging ? "border-blue-500 bg-blue-500/10" : "border-gray-600 hover:border-gray-500 hover:bg-[#22293a]"
                           }`}
                           onDragOver={handleDragOver}
                           onDragLeave={handleDragLeave}
                           onDrop={handleDrop}
                         >
-                          <div className={`text-blue-400 mb-4 transition-transform duration-300 ${isDragging ? 'scale-110' : ''}`}>
-                            <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                              />
-                            </svg>
+                          <div className={`text-blue-400 mb-4 transition-transform duration-300 ${isDragging ? "scale-110" : ""}`}>
+                            <Upload className="w-16 h-16 mx-auto" />
                           </div>
                           <p className="text-center mb-2 font-medium">Drag and Drop your paper here</p>
                           <p className="text-gray-500 text-sm mb-4">Supported Format: PDF</p>
@@ -788,6 +748,7 @@ export default function MathCheck() {
                             Browse Files
                             <input
                               type="file"
+                              ref={fileInputRef}
                               className="hidden"
                               accept="application/pdf"
                               onChange={handleFileChange}
@@ -825,8 +786,8 @@ export default function MathCheck() {
                         disabled={!module || !exam || !file}
                         className={`w-full p-4 rounded-md font-semibold transition-all duration-300 flex items-center justify-center ${
                           !module || !exam || !file
-                          ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                          : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg'
+                          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                          : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
                         }`}
                       >
                         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -841,9 +802,7 @@ export default function MathCheck() {
 
                   <div className="bg-[#1e2d3d] rounded-lg p-6 h-fit">
                     <h3 className="text-lg font-semibold mb-4 flex items-center">
-                      <svg className="w-5 h-5 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                      <Info className="w-5 h-5 text-blue-400 mr-2" />
                       How It Works
                     </h3>
                     <ul className="space-y-4">
@@ -887,9 +846,7 @@ export default function MathCheck() {
 
                     <div className="mt-6 p-3 bg-blue-500/10 rounded-md">
                       <p className="text-sm text-blue-400 flex items-start">
-                        <svg className="w-5 h-5 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                        <Info className="w-5 h-5 mr-2 shrink-0" />
                         Our AI can recognize a wide range of mathematical notation including calculus, linear algebra, and statistics.
                       </p>
                     </div>
@@ -940,13 +897,11 @@ export default function MathCheck() {
         )}
 
         {/* History Tab */}
-        {activeTab === 'history' && (
+        {activeTab === "history" && (
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold flex items-center">
-                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <Clock className="w-5 h-5 text-blue-500 mr-2" />
                 Submission History
               </h2>
               <div className="relative">
@@ -993,10 +948,10 @@ export default function MathCheck() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            submission.score >= 90 ? 'bg-green-200 text-green-800' :
-                            submission.score >= 80 ? 'bg-blue-200 text-blue-800' :
-                            submission.score >= 70 ? 'bg-yellow-200 text-yellow-800' :
-                            'bg-red-200 text-red-800'
+                            submission.score >= 90 ? "bg-green-200 text-green-800" :
+                            submission.score >= 80 ? "bg-blue-200 text-blue-800" :
+                            submission.score >= 70 ? "bg-yellow-200 text-yellow-800" :
+                            "bg-red-200 text-red-800"
                           }`}>
                             {submission.score}%
                           </div>
@@ -1043,13 +998,11 @@ export default function MathCheck() {
 
             <div className="bg-[#1e2d3d] p-6 rounded-lg mb-6">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
-                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <Info className="w-5 h-5 text-blue-500 mr-2" />
                 About Your Submission History
               </h3>
               <p className="text-gray-400 mb-4">
-                Your submission history shows all the math papers you&apos;ve submitted for analysis.
+                Your submission history shows all the math papers you've submitted for analysis.
                 You can view detailed feedback, download reports, or delete submissions you no longer need.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
@@ -1071,13 +1024,11 @@ export default function MathCheck() {
         )}
 
         {/* Insights Tab */}
-        {activeTab === 'insights' && (
+        {activeTab === "insights" && (
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold flex items-center">
-                <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+                <BarChart2 className="w-5 h-5 text-blue-500 mr-2" />
                 Performance Insights
               </h2>
               <div>
@@ -1100,7 +1051,7 @@ export default function MathCheck() {
                       <span className="text-blue-400">85%</span>
                     </div>
                     <div className="h-2 bg-gray-700 rounded-full">
-                      <div className="h-2 bg-blue-500 rounded-full" style={{ width: '85%' }}></div>
+                      <div className="h-2 bg-blue-500 rounded-full" style={{ width: "85%" }}></div>
                     </div>
                   </div>
                   <div>
@@ -1109,7 +1060,7 @@ export default function MathCheck() {
                       <span className="text-green-400">92%</span>
                     </div>
                     <div className="h-2 bg-gray-700 rounded-full">
-                      <div className="h-2 bg-green-500 rounded-full" style={{ width: '92%' }}></div>
+                      <div className="h-2 bg-green-500 rounded-full" style={{ width: "92%" }}></div>
                     </div>
                   </div>
                   <div>
@@ -1118,7 +1069,7 @@ export default function MathCheck() {
                       <span className="text-yellow-400">78%</span>
                     </div>
                     <div className="h-2 bg-gray-700 rounded-full">
-                      <div className="h-2 bg-yellow-500 rounded-full" style={{ width: '78%' }}></div>
+                      <div className="h-2 bg-yellow-500 rounded-full" style={{ width: "78%" }}></div>
                     </div>
                   </div>
                   <div>
@@ -1127,7 +1078,7 @@ export default function MathCheck() {
                       <span className="text-purple-400">88%</span>
                     </div>
                     <div className="h-2 bg-gray-700 rounded-full">
-                      <div className="h-2 bg-purple-500 rounded-full" style={{ width: '88%' }}></div>
+                      <div className="h-2 bg-purple-500 rounded-full" style={{ width: "88%" }}></div>
                     </div>
                   </div>
                 </div>
@@ -1340,4 +1291,7 @@ export default function MathCheck() {
       </footer>
     </div>
   );
-}
+};
+
+export default MathCheck;
+                    
