@@ -19,13 +19,20 @@ export default function MathCheck() {
   const [tutorialStep, setTutorialStep] = useState(0);
 
   // Math modules
-  const moduleOptions = ['Algebra', 'Calculus', 'Statistics', 'Geometry', 'Linear Algebra', 'Number Theory'];
+  const moduleOptions = ['P1', 'P2', 'P3', 'P4', 'S1', 'S2', 'S3', 'M1', 'M2', 'FP1', 'FP2'];
+  const dateOptions = ['June 2019', 'October 2019',
+    'January 2020', 'June 2020', 'October 2020',
+    'January 2021', 'June 2021', 'October 2021',
+    'January 2022', 'June 2022', 'October 2022',
+    'January 2023', 'June 2023', 'October 2023',
+    'January 2024', 'June 2024', 'October 2024',
+  ];
 
   // Recent submissions mock data
   const recentSubmissions = [
-    { id: 'MC-2025-001', module: 'Calculus', exam: 'Midterm', date: '02 Mar 2025', score: 85 },
-    { id: 'MC-2025-002', module: 'Algebra', exam: 'Final', date: '28 Feb 2025', score: 92 },
-    { id: 'MC-2025-003', module: 'Statistics', exam: 'Quiz', date: '25 Feb 2025', score: 78 }
+    { id: 'MC-2025-001', module: 'P2', exam: 'June 2019', date: '02 Mar 2025', score: 85 },
+    { id: 'MC-2025-002', module: 'M1', exam: 'January 2023', date: '28 Feb 2025', score: 92 },
+    { id: 'MC-2025-003', module: 'S1', exam: 'January 2024', date: '25 Feb 2025', score: 78 },
   ];
 
   // Sample feedback data
@@ -256,11 +263,6 @@ export default function MathCheck() {
                     <p className="text-gray-300">MathCheck uses advanced AI to analyze your math papers, identify errors, and provide detailed feedback to help you improve your understanding.</p>
                   </div>
                 </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="MathCheck Dashboard Overview"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
               </div>
             )}
 
@@ -277,11 +279,6 @@ export default function MathCheck() {
                     <p className="text-gray-300">Select your math module, exam type, and upload your paper in PDF format. Ensure your handwriting is clear or that your typed document uses standard mathematical notation.</p>
                   </div>
                 </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Uploading Paper"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
               </div>
             )}
 
@@ -298,11 +295,6 @@ export default function MathCheck() {
                     <p className="text-gray-300">Our AI engine will analyze your paper and provide insights into your strengths, areas for improvement, and specific feedback on mathematical concepts.</p>
                   </div>
                 </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Analysis Results"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
               </div>
             )}
 
@@ -319,11 +311,6 @@ export default function MathCheck() {
                     <p className="text-gray-300">View your submission history, track your improvement over time, and access previous analyses to see how your mathematical skills are developing.</p>
                   </div>
                 </div>
-                <img
-                  src="/api/placeholder/500/280"
-                  alt="Progress Tracking"
-                  className="rounded-md mb-4 w-full object-cover"
-                />
 
                 <div className="bg-green-500/10 p-4 rounded-md mb-4">
                   <p className="text-green-400 font-medium">You&apos;re all set! Start by uploading your first math paper for analysis.</p>
@@ -464,13 +451,13 @@ export default function MathCheck() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="text-2xl font-bold text-blue-500">Math</div>
-              <div className="text-2xl font-bold">Check</div>
-              <div className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">PRO</div>
+              <div className="text-2xl font-bold">Math</div>
+              <div className="text-2xl font-bold text-blue-500">Check</div>
+              <div className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">BETA</div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <button className="text-gray-300 hover:text-white hidden md:flex items-center">
+            <button className="text-gray-300 hover:text-white hidden md:flex items-center">
                 <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -696,7 +683,7 @@ export default function MathCheck() {
                     {/* Module and Exam Selection */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <div className="relative">
-                        <label className="block text-sm text-gray-400 mb-2 ml-1">Mathematics Module</label>
+                        <label className="block text-sm text-gray-400 mb-2 ml-1">Module</label>
                         <select
                           className="w-full bg-[#2c3542] text-gray-300 p-4 rounded-md appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={module}
@@ -714,19 +701,36 @@ export default function MathCheck() {
                         </div>
                       </div>
 
+                      {/*<div className="relative">*/}
+                      {/*  <label className="block text-sm text-gray-400 mb-2 ml-1">Exam Date</label>*/}
+                      {/*  <select*/}
+                      {/*    className="w-full bg-[#2c3542] text-gray-300 p-4 rounded-md appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"*/}
+                      {/*    value={module}*/}
+                      {/*    onChange={(e) => setModule(e.target.value)}*/}
+                      {/*  >*/}
+                      {/*    <option value="" disabled>Select Module</option>*/}
+                      {/*    {moduleOptions.map((mod, index) => (*/}
+                      {/*      <option key={index} value={index}>{mod}</option>*/}
+                      {/*    ))}*/}
+                      {/*  </select>*/}
+                      {/*  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 top-6">*/}
+                      {/*    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">*/}
+                      {/*      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />*/}
+                      {/*    </svg>*/}
+                      {/*  </div>*/}
+                      {/*</div>*/}
+
                       <div className="relative">
-                        <label className="block text-sm text-gray-400 mb-2 ml-1">Exam Type</label>
+                        <label className="block text-sm text-gray-400 mb-2 ml-1">Exam</label>
                         <select
                           className="w-full bg-[#2c3542] text-gray-300 p-4 rounded-md appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                           value={exam}
                           onChange={(e) => setExam(e.target.value)}
                         >
-                          <option value="" disabled>Select Exam</option>
-                          <option value="midterm">Midterm</option>
-                          <option value="final">Final Exam</option>
-                          <option value="quiz">Quiz</option>
-                          <option value="homework">Homework</option>
-                          <option value="practice">Practice Problems</option>
+                          <option value="" disabled>Select Module</option>
+                          {dateOptions.map((mod, index) => (
+                              <option key={index} value={index}>{mod}</option>
+                          ))}
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 top-6">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -982,7 +986,7 @@ export default function MathCheck() {
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Module</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Exam Type</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Exam</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Score</th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
