@@ -236,7 +236,7 @@ export default function MathCheck() {
                           <p className="text-gray-500 text-sm mt-4 text-center">
                             For best results, ensure that your mathematical notation is clear and legible.<br />
                             Our AI can recognize both handwritten and typed mathematics.
-                          </p>text-gray-300">MathCheck uses advanced AI to analyze your math papers, identify errors, and provide detailed feedback to help you improve your understanding.</p>
+                          </p>
                   </div>
                 </div>
                 <img
