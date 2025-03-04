@@ -4,236 +4,99 @@
 
 :root {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 18, 18, 18;
-  --background-end-rgb: 10, 10, 10;
+  --background-rgb: 18, 18, 18;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
+  background-color: rgb(var(--background-rgb));
   min-height: 100vh;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Basic Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
-::-webkit-scrollbar-track {
-  background: #181818;
-  border-radius: 8px;
+.btn-primary {
+  background-color: #0073f5;
+  color: white;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 8px;
+.btn-primary:hover:not(:disabled) {
+  background-color: #005cc4;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #444;
+/* Basic Card Styles */
+.card {
+  background-color: #1e1e1e;
+  border-radius: 0.5rem;
+  border: 1px solid #2d2d2d;
+  overflow: hidden;
 }
 
-/* Focus Outline */
-*:focus-visible {
-  @apply outline-none ring-2 ring-primary-400 ring-offset-1 ring-offset-dark-500;
+.card-header {
+  padding: 1rem;
+  border-bottom: 1px solid #2d2d2d;
 }
 
-/* Custom utility classes */
-@layer components {
-  /* Button Styles */
-  .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-500 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-primary {
-    @apply btn bg-primary-500 hover:bg-primary-600 text-white shadow-button-dark hover:shadow-lg;
-  }
-
-  .btn-secondary {
-    @apply btn bg-dark-200 hover:bg-dark-100 text-white shadow-button-dark;
-  }
-
-  .btn-outline {
-    @apply btn border-2 border-primary-500 text-primary-400 hover:bg-primary-500/10;
-  }
-
-  .btn-ghost {
-    @apply btn text-white hover:bg-white/5;
-  }
-
-  .btn-danger {
-    @apply btn bg-error hover:bg-error/90 text-white;
-  }
-
-  /* Input Styles */
-  .input {
-    @apply block w-full px-4 py-3 bg-dark-300 border border-dark-100 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all duration-200;
-  }
-
-  .input-group {
-    @apply flex flex-col space-y-1;
-  }
-
-  .input-label {
-    @apply text-sm font-medium text-gray-300;
-  }
-
-  .input-error {
-    @apply text-sm text-error mt-1;
-  }
-
-  /* Card Styles */
-  .card {
-    @apply bg-card-dark rounded-xl shadow-card-dark border border-dark-100/50 overflow-hidden transition-shadow duration-300 hover:shadow-card-hover-dark;
-  }
-
-  .card-header {
-    @apply px-6 py-4 border-b border-dark-100/50;
-  }
-
-  .card-body {
-    @apply p-6;
-  }
-
-  .card-footer {
-    @apply px-6 py-4 border-t border-dark-100/50;
-  }
-
-  /* Tab Styles */
-  .tabs {
-    @apply flex space-x-1 overflow-x-auto pb-1;
-  }
-
-  .tab {
-    @apply px-4 py-2 rounded-lg font-medium text-gray-400 hover:text-white hover:bg-dark-100 transition-all duration-200;
-  }
-
-  .tab-active {
-    @apply bg-dark-100 text-primary-400;
-  }
-
-  /* Badge Styles */
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-primary {
-    @apply badge bg-primary-500/20 text-primary-300;
-  }
-
-  .badge-success {
-    @apply badge bg-success/20 text-success;
-  }
-
-  .badge-warning {
-    @apply badge bg-warning/20 text-warning;
-  }
-
-  .badge-error {
-    @apply badge bg-error/20 text-error;
-  }
-
-  /* Glass card effect */
-  .glass-card {
-    @apply bg-dark-400/60 backdrop-blur-md border border-white/5 rounded-xl;
-  }
-
-  /* Drag & Drop Area */
-  .dropzone {
-    @apply border-2 border-dashed border-dark-100 rounded-xl p-6 transition-all duration-200 cursor-pointer;
-  }
-
-  .dropzone-active {
-    @apply border-primary-500 bg-primary-500/5;
-  }
-
-  /* Loading Animation */
-  .loading-dots {
-    @apply inline-flex space-x-1;
-  }
-
-  .loading-dot {
-    @apply w-2 h-2 rounded-full bg-primary-500;
-    animation: dot-flashing 1s infinite alternate;
-  }
-
-  .loading-dot:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-
-  .loading-dot:nth-child(3) {
-    animation-delay: 0.4s;
-  }
-
-  /* Staggered animation for list items */
-  .stagger-item {
-    @apply opacity-0;
-    animation: slide-up 0.3s ease-out forwards;
-  }
-
-  /* Tutorial step indicator */
-  .step-indicator {
-    @apply flex items-center space-x-2;
-  }
-
-  .step {
-    @apply w-8 h-8 rounded-full flex items-center justify-center border border-dark-100 text-sm font-medium;
-  }
-
-  .step-active {
-    @apply bg-primary-500 border-primary-600 text-white;
-  }
-
-  .step-completed {
-    @apply bg-success border-success/70 text-white;
-  }
+.card-body {
+  padding: 1rem;
 }
 
-/* Animations */
-@keyframes dot-flashing {
-  0% {
-    opacity: 0.2;
-  }
-  100% {
-    opacity: 1;
-  }
+.card-footer {
+  padding: 1rem;
+  border-top: 1px solid #2d2d2d;
 }
 
-/* Staggered list animation */
-.stagger-list > *:nth-child(1) { animation-delay: 0.1s; }
-.stagger-list > *:nth-child(2) { animation-delay: 0.2s; }
-.stagger-list > *:nth-child(3) { animation-delay: 0.3s; }
-.stagger-list > *:nth-child(4) { animation-delay: 0.4s; }
-.stagger-list > *:nth-child(5) { animation-delay: 0.5s; }
-.stagger-list > *:nth-child(6) { animation-delay: 0.6s; }
-
-/* Tooltip */
-.tooltip {
-  @apply relative inline-block;
+/* Basic Input Styles */
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: #252525;
+  border: 1px solid #2d2d2d;
+  border-radius: 0.375rem;
+  color: white;
 }
 
-.tooltip .tooltip-text {
-  @apply invisible absolute z-10 p-2 text-xs text-white bg-dark-100 rounded-lg opacity-0 transition-opacity duration-300 w-max max-w-xs;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%);
+.input:focus {
+  outline: 2px solid #0073f5;
+  outline-offset: 1px;
 }
 
-.tooltip:hover .tooltip-text {
-  @apply visible opacity-100;
+/* Basic Tab Styles */
+.tabs {
+  display: flex;
+  gap: 0.25rem;
 }
 
-/* File upload progress bar */
-.progress-bar {
-  @apply h-2 bg-dark-100 rounded-full overflow-hidden;
+.tab {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  color: #a0a0a0;
 }
 
-.progress-bar-fill {
-  @apply h-full bg-primary-500 transition-all duration-300;
+.tab:hover {
+  color: white;
+  background-color: #252525;
+}
+
+.tab-active {
+  background-color: #252525;
+  color: #0073f5;
+}
+
+/* File dropzone */
+.dropzone {
+  border: 2px dashed #2d2d2d;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
 }
