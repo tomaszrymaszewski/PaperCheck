@@ -12,12 +12,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        {/* Fallback styles in case Tailwind isn't loading */}
-        <style jsx global>{`
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: `
           body {
             background-color: #121212;
             color: white;
@@ -35,7 +31,12 @@ export default function RootLayout({ children }) {
           button:hover {
             background-color: #0073f5;
           }
-        `}</style>
+        `}} />
+      </head>
+      <body className={inter.className}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
