@@ -1,30 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import MathCheck from './components/MathCheck';
 import Login from './components/Login';
 import { useAuth } from './components/AuthContext';
 
 export default function Home() {
   const { user, loading } = useAuth();
-  const [showContent, setShowContent] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Add a slight delay to prevent flash of login screen when user is already logged in
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 300);
-    
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
-  if (!showContent || loading) {
+  if (!mounted || loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#121212] flex items-center justify-center">
-        <div className="animate-pulse flex items-center text-blue-500">
-          <span className="text-2xl font-bold">Math</span>
-          <span className="text-2xl font-bold text-white">Check</span>
-          <span className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">PRO</span>
+      <div className="min-h-screen flex items-center justify-center bg-dark-bg">
+        <div className="text-center">
+          <div className="inline-block animate-pulse">
+            <div className="text-2xl font-bold">Math<span className="text-blue-primary">Check</span></div>
+            <p className="mt-4 text-gray-400">Loading...</p>
+          </div>
         </div>
       </div>
     );
@@ -32,13 +28,7 @@ export default function Home() {
 
   return (
     <main>
-      {user ? (
-        <MathCheck />
-      ) : (
-        <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#121212] flex items-center justify-center p-4">
-          <Login />
-        </div>
-      )}
+      {user ? <MathCheck /> : <Login />}
     </main>
   );
 }
