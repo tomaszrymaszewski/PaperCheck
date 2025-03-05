@@ -11,7 +11,7 @@ import {
   AlertCircle,
   Book,
 } from "lucide-react";
-
+// updated
 const MathCheck = () => {
   const { user, logout } = useAuth();
   
