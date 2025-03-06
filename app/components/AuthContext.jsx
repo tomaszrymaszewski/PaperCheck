@@ -1,53 +1,94 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth, signInWithGoogle, logoutUser } from './firebase';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { auth, signInWithGoogle, loginWithEmailPassword, registerWithEmailPassword, logoutUser } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
-// Create auth context
+// Create the AuthContext
 const AuthContext = createContext();
 
-// Auth provider component
+// AuthProvider component that wraps your app and provides the auth context value
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    // Subscribe to auth state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    // Set up auth state observer
+    const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+      if (authUser) {
+        // User is signed in
+        setUser({
+          uid: authUser.uid,
+          email: authUser.email,
+          displayName: authUser.displayName || localStorage.getItem('mathCheckUserName') || 'User',
+          photoURL: authUser.photoURL,
+        });
+      } else {
+        // User is signed out
+        setUser(null);
+      }
       setLoading(false);
     });
 
-    // Cleanup subscription
+    // Clean up the subscription
     return () => unsubscribe();
   }, []);
 
-  // Sign in handler
-  const signIn = async () => {
+  // Sign in with Google
+  const signInWithGoogleAuth = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const result = await signInWithGoogle();
       if (result.success) {
-        router.push('/dashboard');
+        return { success: true, user: result.user };
       }
-      return result;
+      return { success: false, error: result.error };
     } finally {
       setLoading(false);
     }
   };
 
-  // Logout handler
-  const logout = async () => {
+  // Sign in with email/password
+  const login = async (email, password) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const result = await logoutUser();
+      const result = await loginWithEmailPassword(email, password);
       if (result.success) {
-        router.push('/');
+        return { success: true, user: result.user };
       }
-      return result;
+      return { success: false, error: result.error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Register with email/password
+  const register = async (email, password, name) => {
+    setLoading(true);
+    try {
+      const result = await registerWithEmailPassword(email, password);
+      if (result.success) {
+        // Store user name for later use
+        localStorage.setItem('mathCheckUserName', name);
+        return { success: true, user: result.user };
+      }
+      return { success: false, error: result.error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Sign out
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await logoutUser();
+      router.push('/');
+      return { success: true };
+    } catch (error) {
+      return { success: false, error };
     } finally {
       setLoading(false);
     }
@@ -57,7 +98,9 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     loading,
-    signIn,
+    signInWithGoogle: signInWithGoogleAuth,
+    login,
+    register,
     logout,
     isAuthenticated: !!user,
   };
@@ -65,7 +108,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// Custom hook to use auth context
+// Custom hook to use the auth context
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
