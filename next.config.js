@@ -2,11 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    // Enable modern JS features
-    optimizeFonts: true,
-    scrollRestoration: true,
-  }
+  // Remove the experimental options that are causing problems
 }
 
 module.exports = nextConfig
