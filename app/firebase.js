@@ -1,12 +1,8 @@
 // app/firebase.js
 "use client";
 
-import { initializeApp, getApps } from 'firebase/app';
-import { 
-  getAuth, 
-  GoogleAuthProvider,
-  signInWithRedirect
-} from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -19,36 +15,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-let firebaseApp;
-if (!getApps().length) {
-  firebaseApp = initializeApp(firebaseConfig);
-} else {
-  firebaseApp = getApps()[0];
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-// Initialize Auth
-const auth = getAuth(firebaseApp);
-const googleProvider = new GoogleAuthProvider();
-
-// Auth functions
-export const signInWithGoogle = async () => {
-  try {
-    await signInWithRedirect(auth, googleProvider);
-    return { success: true };
-  } catch (error) {
-    console.error("Error signing in with Google:", error);
-    return { success: false, error };
-  }
-};
-
-export const logoutUser = async () => {
-  try {
-    await auth.signOut();
-    return { success: true };
-  } catch (error) {
-    console.error("Error signing out:", error);
-    return { success: false, error };
-  }
-};
-
-export { auth, firebaseApp };
+export { auth };
+export default app;
