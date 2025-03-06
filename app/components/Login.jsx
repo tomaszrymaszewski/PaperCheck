@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './components/AuthContext';
 
-// Define styles as JavaScript objects for inline styling
+// Keep your existing styles from the original file...
 const styles = {
   container: {
     minHeight: '100vh',
@@ -55,57 +55,6 @@ const styles = {
     borderRadius: '0.375rem',
     marginBottom: '1.5rem'
   },
-  formGroup: {
-    marginBottom: '1rem'
-  },
-  label: {
-    display: 'block',
-    fontSize: '0.875rem',
-    color: '#9ca3af',
-    marginBottom: '0.5rem'
-  },
-  input: {
-    width: '100%',
-    backgroundColor: '#2c3542',
-    color: 'white',
-    padding: '0.75rem',
-    borderRadius: '0.375rem',
-    border: 'none',
-    outline: 'none'
-  },
-  button: {
-    width: '100%',
-    backgroundColor: '#3b82f6',
-    color: 'white',
-    padding: '0.75rem',
-    borderRadius: '0.375rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    border: 'none',
-    marginBottom: '0.5rem'
-  },
-  buttonDisabled: {
-    opacity: '0.7',
-    cursor: 'not-allowed'
-  },
-  buttonContent: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  spinner: {
-    marginRight: '0.75rem'
-  },
-  switchButton: {
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#9ca3af',
-    cursor: 'pointer',
-    marginTop: '1rem',
-    textAlign: 'center',
-    display: 'block',
-    width: '100%'
-  },
   googleButton: {
     width: '100%',
     backgroundColor: '#ffffff',
@@ -121,135 +70,64 @@ const styles = {
     alignItems: 'center',
     gap: '10px'
   },
-  divider: {
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'center',
-    margin: '1.5rem 0',
-    color: '#9ca3af'
-  },
-  dividerLine: {
-    flex: '1',
-    height: '1px',
-    backgroundColor: '#4b5563'
-  },
-  dividerText: {
-    padding: '0 1rem'
+  buttonDisabled: {
+    opacity: '0.7',
+    cursor: 'not-allowed'
   },
   footer: {
     marginTop: '3rem',
     textAlign: 'center',
     color: '#6b7280',
     fontSize: '0.875rem'
+  },
+  loadingContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    backgroundColor: '#1a1a1a',
+    color: '#ffffff',
+  },
+  loadingSpinner: {
+    border: '4px solid rgba(0, 0, 0, 0.1)',
+    borderLeft: '4px solid #3b82f6',
+    borderRadius: '50%',
+    width: '40px',
+    height: '40px',
+    animation: 'spin 1s linear infinite',
+    marginBottom: '1rem',
   }
 };
 
-export default function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isRegister, setIsRegister] = useState(false);
-  const [name, setName] = useState('');
+export default function Login() {
+  const { user, loading, signIn } = useAuth();
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  
   const router = useRouter();
-  const { user, loading, signInWithGoogle, login, register } = useAuth();
 
   useEffect(() => {
-    // Redirect to dashboard if user is already authenticated
+    // Redirect to dashboard if already logged in
     if (user && !loading) {
       router.push('/dashboard');
     }
   }, [user, loading, router]);
 
-  const handleEmailPasswordSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      if (!email || !password) {
-        setError('Please enter both email and password.');
-        setIsLoading(false);
-        return;
-      }
-
-      let result;
-      
-      if (isRegister) {
-        if (!name) {
-          setError('Please enter your name.');
-          setIsLoading(false);
-          return;
-        }
-        
-        // Register with email and password
-        result = await register(email, password, name);
-      } else {
-        // Login with email and password
-        result = await login(email, password);
-      }
-      
-      if (result.success) {
-        // Call onLogin if provided
-        if (onLogin) {
-          onLogin(email, name || result.user.displayName);
-        }
-        
-        // Navigate to dashboard (this is also handled by the useEffect)
-        router.push('/dashboard');
-      } else {
-        setError(result.error.message || 'Authentication failed. Please try again.');
-      }
-    } catch (err) {
-      setError('Authentication failed. Please try again.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
   const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    setError('');
-    
     try {
-      const result = await signInWithGoogle();
-      
-      if (result.success) {
-        // Call onLogin if provided
-        if (onLogin) {
-          onLogin(result.user.email, result.user.displayName);
-        }
-        
-        // Navigate to dashboard (this is also handled by the useEffect)
-        router.push('/dashboard');
-      } else {
-        setError(result.error.message || 'Google sign in failed. Please try again.');
-      }
+      setError('');
+      await signIn();
+      // Redirect will happen automatically in the AuthContext
     } catch (err) {
-      setError('Google sign in failed. Please try again.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+      console.error('Sign in error:', err);
+      setError('An unexpected error occurred. Please try again.');
     }
   };
 
-  // If loading auth state, show minimal loading UI
   if (loading) {
     return (
-      <div style={{
-        ...styles.container,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <div style={styles.buttonContent}>
-          <svg style={styles.spinner} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.25" />
-            <path fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <span>Loading...</span>
-        </div>
+      <div style={styles.loadingContainer}>
+        <div style={styles.loadingSpinner}></div>
+        <p>Loading...</p>
       </div>
     );
   }
@@ -267,7 +145,7 @@ export default function Login({ onLogin }) {
 
       <main style={styles.main}>
         <h1 style={styles.title}>
-          {isRegister ? 'Create Account' : 'Welcome Back'}
+          Welcome to MathCheck
         </h1>
         
         {error && (
@@ -276,14 +154,9 @@ export default function Login({ onLogin }) {
           </div>
         )}
         
-        {/* Google Sign In Button */}
         <button
           onClick={handleGoogleSignIn}
-          disabled={isLoading}
-          style={{
-            ...styles.googleButton,
-            ...(isLoading ? styles.buttonDisabled : {})
-          }}
+          style={styles.googleButton}
         >
           <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
             <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
@@ -292,89 +165,6 @@ export default function Login({ onLogin }) {
             <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
           </svg>
           Sign in with Google
-        </button>
-        
-        <div style={styles.divider}>
-          <div style={styles.dividerLine}></div>
-          <div style={styles.dividerText}>OR</div>
-          <div style={styles.dividerLine}></div>
-        </div>
-
-        <form onSubmit={handleEmailPasswordSubmit}>
-          {isRegister && (
-            <div style={styles.formGroup}>
-              <label htmlFor="name" style={styles.label}>
-                Full Name
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={styles.input}
-                placeholder="Enter your name"
-                required={isRegister}
-              />
-            </div>
-          )}
-          
-          <div style={styles.formGroup}>
-            <label htmlFor="email" style={styles.label}>
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={styles.input}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          
-          <div style={styles.formGroup}>
-            <label htmlFor="password" style={styles.label}>
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={styles.input}
-              placeholder={isRegister ? "Create a password" : "Enter your password"}
-              required
-            />
-          </div>
-          
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              ...styles.button,
-              ...(isLoading ? styles.buttonDisabled : {})
-            }}
-          >
-            {isLoading ? (
-              <span style={styles.buttonContent}>
-                <svg style={styles.spinner} width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="4" opacity="0.25" />
-                  <path fill="none" stroke="currentColor" strokeWidth="4" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                {isRegister ? 'Creating Account...' : 'Logging In...'}
-              </span>
-            ) : (
-              <>{isRegister ? 'Sign Up' : 'Log In'}</>
-            )}
-          </button>
-        </form>
-        
-        <button 
-          onClick={() => setIsRegister(!isRegister)}
-          style={styles.switchButton}
-        >
-          {isRegister ? 'Already have an account? Log In' : "Don't have an account? Sign Up"}
         </button>
         
         <div style={styles.footer}>
