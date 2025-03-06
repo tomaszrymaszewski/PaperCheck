@@ -4,18 +4,27 @@ import { useState, useEffect } from 'react';
 import { useAuth } from './components/AuthContext';
 import Login from './components/Login';
 import MathCheck from './components/MathCheck';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function Home() {
   // Initialize with a loading state
   const [isClient, setIsClient] = useState(false);
   
-  // Access auth context
+  // Access auth context and router
   const { user, loading, login } = useAuth();
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   // Run once on component mount to confirm we're on the client
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    
+    // Check if we need to redirect after login
+    const redirectPath = searchParams.get('from');
+    if (user && redirectPath && redirectPath !== '/') {
+      router.push(redirectPath);
+    }
+  }, [user, router, searchParams]);
 
   // Handle login callback
   const handleLogin = (email, name) => {
