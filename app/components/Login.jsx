@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  signInWithGoogle, 
-  loginWithEmailPassword, 
-  registerWithEmailPassword,
-  auth
-} from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from './components/AuthContext';
 
 // Define styles as JavaScript objects for inline styling
 const styles = {
@@ -159,18 +153,14 @@ export default function Login({ onLogin }) {
   const [isLoading, setIsLoading] = useState(false);
   
   const router = useRouter();
+  const { user, loading, signInWithGoogle, login, register } = useAuth();
 
   useEffect(() => {
-    // Check if user is already authenticated
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.push('/dashboard');
-      }
-    });
-
-    // Cleanup subscription
-    return () => unsubscribe();
-  }, [router]);
+    // Redirect to dashboard if user is already authenticated
+    if (user && !loading) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
 
   const handleEmailPasswordSubmit = async (e) => {
     e.preventDefault();
@@ -194,15 +184,10 @@ export default function Login({ onLogin }) {
         }
         
         // Register with email and password
-        result = await registerWithEmailPassword(email, password);
-        
-        if (result.success) {
-          // Save name for the user
-          localStorage.setItem('mathCheckUserName', name);
-        }
+        result = await register(email, password, name);
       } else {
         // Login with email and password
-        result = await loginWithEmailPassword(email, password);
+        result = await login(email, password);
       }
       
       if (result.success) {
@@ -211,7 +196,7 @@ export default function Login({ onLogin }) {
           onLogin(email, name || result.user.displayName);
         }
         
-        // Navigate to dashboard
+        // Navigate to dashboard (this is also handled by the useEffect)
         router.push('/dashboard');
       } else {
         setError(result.error.message || 'Authentication failed. Please try again.');
@@ -237,7 +222,7 @@ export default function Login({ onLogin }) {
           onLogin(result.user.email, result.user.displayName);
         }
         
-        // Navigate to dashboard
+        // Navigate to dashboard (this is also handled by the useEffect)
         router.push('/dashboard');
       } else {
         setError(result.error.message || 'Google sign in failed. Please try again.');
@@ -249,6 +234,25 @@ export default function Login({ onLogin }) {
       setIsLoading(false);
     }
   };
+
+  // If loading auth state, show minimal loading UI
+  if (loading) {
+    return (
+      <div style={{
+        ...styles.container,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <div style={styles.buttonContent}>
+          <svg style={styles.spinner} width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.25" />
+            <path fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
