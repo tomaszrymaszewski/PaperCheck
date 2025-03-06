@@ -1,6 +1,4 @@
-I'll write out the complete Dashboard component file with Firebase Authentication integrated, making sure all braces, parentheses, and syntax are correct.
 
-```javascript
 "use client";
 
 import { useState, useEffect } from 'react';
