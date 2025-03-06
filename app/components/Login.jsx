@@ -1,156 +1,162 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
-import { useAuth } from './AuthContext';
+import { useRouter } from 'next/navigation';
 
-export default function Login() {
-  const [isSignUp, setIsSignUp] = useState(false);
+export default function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
-  const { login, signup } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setError('');
-    
-    // Basic validation
-    if (!email || !password) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (isSignUp && password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
     
     try {
-      setLoading(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (isSignUp) {
-        // Handle signup
-        const result = await signup(email, password);
-        if (!result.success) {
-          setError(result.error || 'Failed to create account');
+      // For demo purposes, just check if email and password are not empty
+      if (email && password) {
+        if (isRegister) {
+          // Store user in localStorage for demo purposes
+          localStorage.setItem('mathCheckUserName', name);
         }
+        
+        // Call the onLogin function passed from parent
+        if (onLogin) {
+          onLogin(email);
+        }
+        
+        // For standalone component usage
+        localStorage.setItem('mathCheckAuth', 'true');
+        router.push('/dashboard');
       } else {
-        // Handle login
-        const result = await login(email, password);
-        if (!result.success) {
-          setError(result.error || 'Invalid email or password');
-        }
+        setError('Please enter valid credentials');
       }
-    } catch (error) {
-      setError('An unexpected error occurred');
-      console.error(error);
+    } catch (err) {
+      setError('Authentication failed. Please try again.');
+      console.error(err);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const toggleMode = () => {
-    setIsSignUp(!isSignUp);
-    setError('');
-  };
+  // Check if Tailwind classes apply, otherwise use fallback classes
+  const isTailwindWorking = typeof document !== 'undefined' && 
+    document.querySelector('html')?.classList.contains('js-focus-visible');
 
   return (
-    <div className="bg-[#1e2d3d] p-8 rounded-lg max-w-md w-full mx-auto shadow-xl">
-      <div className="flex justify-center mb-8">
-        <div className="flex items-center">
-          <div className="text-2xl font-bold text-blue-500">Math</div>
-          <div className="text-2xl font-bold text-white">Check</div>
-          <div className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">PRO</div>
+    <div className={isTailwindWorking ? "min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#121212] text-white p-4" : "fallback-container"}>
+      {/* Header */}
+      <header className={isTailwindWorking ? "mb-8" : "fallback-header"}>
+        <div className={isTailwindWorking ? "flex items-center" : "fallback-logo"}>
+          <div className={isTailwindWorking ? "text-2xl font-bold text-blue-500" : ""} style={{ color: '#3b82f6' }}>Math</div>
+          <div className={isTailwindWorking ? "text-2xl font-bold" : ""}>Check</div>
+          <div className={isTailwindWorking ? "ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md" : "fallback-logo-pro"}>PRO</div>
         </div>
-      </div>
-      
-      <h2 className="text-2xl font-bold text-white mb-6 text-center">
-        {isSignUp ? 'Create an Account' : 'Welcome Back'}
-      </h2>
-      
-      {error && (
-        <div className="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-md mb-6">
-          {error}
-        </div>
-      )}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm text-gray-400 mb-2">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+      </header>
+
+      <main className={isTailwindWorking ? "max-w-md mx-auto" : "fallback-form"}>
+        <h1 className={isTailwindWorking ? "text-3xl font-bold mb-8" : ""} style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem' }}>
+          {isRegister ? 'Create Account' : 'Welcome Back'}
+        </h1>
         
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm text-gray-400 mb-2">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-        
-        {isSignUp && (
+        {error && (
+          <div className={isTailwindWorking ? "bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-md mb-6" : ""} 
+               style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgb(239, 68, 68)', color: 'rgb(239, 68, 68)', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          {isRegister && (
+            <div className="mb-4">
+              <label htmlFor="name" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                Full Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+                placeholder="Enter your name"
+                required
+              />
+            </div>
+          )}
+          
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block text-sm text-gray-400 mb-2">Confirm Password</label>
+            <label htmlFor="email" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+              Email
+            </label>
             <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+              placeholder="Enter your email"
               required
             />
           </div>
-        )}
+          
+          <div className="mb-6">
+            <label htmlFor="password" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+              placeholder={isRegister ? "Create a password" : "Enter your password"}
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={isTailwindWorking ? 
+              `w-full bg-blue-600 text-white p-3 rounded-md font-semibold ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'}` : 
+              "fallback-button"}
+          >
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {isRegister ? 'Creating Account...' : 'Logging In...'}
+              </span>
+            ) : (
+              <>{isRegister ? 'Sign Up' : 'Log In'}</>
+            )}
+          </button>
+        </form>
         
-        <button
-          type="submit"
-          className={`w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700 transition-colors mt-2 flex justify-center items-center ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              {isSignUp ? 'Creating Account...' : 'Logging In...'}
-            </>
-          ) : (
-            <>{isSignUp ? 'Sign Up' : 'Log In'}</>
-          )}
-        </button>
-      </form>
-      
-      <div className="mt-6 text-center">
-        <button 
-          onClick={toggleMode} 
-          className="text-blue-400 hover:text-blue-300 transition-colors"
-        >
-          {isSignUp 
-            ? 'Already have an account? Log In' 
-            : 'Don\'t have an account? Sign Up'}
-        </button>
-      </div>
-      
-      <div className="mt-8 pt-6 border-t border-gray-700">
-        <div className="text-center text-gray-400 text-sm">
+        <div className="mt-4 text-center">
+          <button 
+            onClick={() => setIsRegister(!isRegister)}
+            className={isTailwindWorking ? "text-gray-400 hover:text-blue-500" : "fallback-link"}
+          >
+            {isRegister ? 'Already have an account? Log In' : "Don't have an account? Sign Up"}
+          </button>
+        </div>
+        
+        <div className={isTailwindWorking ? "mt-12 text-center text-gray-500 text-sm" : ""} style={{ marginTop: '3rem', textAlign: 'center', color: '#6b7280', fontSize: '0.875rem' }}>
           <p>MathCheck uses AI to analyze your mathematics papers and provide detailed feedback to improve your skills.</p>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
