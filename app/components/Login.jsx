@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { 
+  signInWithGoogle, 
+  loginWithEmailPassword, 
+  registerWithEmailPassword,
+  auth
+} from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 // Define styles as JavaScript objects for inline styling
 const styles = {
@@ -105,6 +112,36 @@ const styles = {
     display: 'block',
     width: '100%'
   },
+  googleButton: {
+    width: '100%',
+    backgroundColor: '#ffffff',
+    color: '#2c3542',
+    padding: '0.75rem',
+    borderRadius: '0.375rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    border: 'none',
+    marginBottom: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '10px'
+  },
+  divider: {
+    display: 'flex',
+    alignItems: 'center',
+    textAlign: 'center',
+    margin: '1.5rem 0',
+    color: '#9ca3af'
+  },
+  dividerLine: {
+    flex: '1',
+    height: '1px',
+    backgroundColor: '#4b5563'
+  },
+  dividerText: {
+    padding: '0 1rem'
+  },
   footer: {
     marginTop: '3rem',
     textAlign: 'center',
@@ -123,38 +160,90 @@ export default function Login({ onLogin }) {
   
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    // Check if user is already authenticated
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.push('/dashboard');
+      }
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
+  }, [router]);
+
+  const handleEmailPasswordSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!email || !password) {
+        setError('Please enter both email and password.');
+        setIsLoading(false);
+        return;
+      }
+
+      let result;
       
-      // For demo purposes, just check if email and password are not empty
-      if (email && password) {
-        if (isRegister) {
-          // Store user in localStorage for demo purposes
+      if (isRegister) {
+        if (!name) {
+          setError('Please enter your name.');
+          setIsLoading(false);
+          return;
+        }
+        
+        // Register with email and password
+        result = await registerWithEmailPassword(email, password);
+        
+        if (result.success) {
+          // Save name for the user
           localStorage.setItem('mathCheckUserName', name);
         }
-        
-        // Call the onLogin function passed from parent
+      } else {
+        // Login with email and password
+        result = await loginWithEmailPassword(email, password);
+      }
+      
+      if (result.success) {
+        // Call onLogin if provided
         if (onLogin) {
-          onLogin(email, name);
+          onLogin(email, name || result.user.displayName);
         }
         
-        // Important: Store auth status
-        localStorage.setItem('mathCheckAuth', 'true');
-        localStorage.setItem('mathCheckUserEmail', email);
-        
-        // Redirect to the main application
+        // Navigate to dashboard
         router.push('/dashboard');
       } else {
-        setError('Please enter valid credentials');
+        setError(result.error.message || 'Authentication failed. Please try again.');
       }
     } catch (err) {
       setError('Authentication failed. Please try again.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const result = await signInWithGoogle();
+      
+      if (result.success) {
+        // Call onLogin if provided
+        if (onLogin) {
+          onLogin(result.user.email, result.user.displayName);
+        }
+        
+        // Navigate to dashboard
+        router.push('/dashboard');
+      } else {
+        setError(result.error.message || 'Google sign in failed. Please try again.');
+      }
+    } catch (err) {
+      setError('Google sign in failed. Please try again.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -182,8 +271,32 @@ export default function Login({ onLogin }) {
             {error}
           </div>
         )}
+        
+        {/* Google Sign In Button */}
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={isLoading}
+          style={{
+            ...styles.googleButton,
+            ...(isLoading ? styles.buttonDisabled : {})
+          }}
+        >
+          <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+          </svg>
+          Sign in with Google
+        </button>
+        
+        <div style={styles.divider}>
+          <div style={styles.dividerLine}></div>
+          <div style={styles.dividerText}>OR</div>
+          <div style={styles.dividerLine}></div>
+        </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleEmailPasswordSubmit}>
           {isRegister && (
             <div style={styles.formGroup}>
               <label htmlFor="name" style={styles.label}>
