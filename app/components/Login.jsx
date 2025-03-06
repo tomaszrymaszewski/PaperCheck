@@ -31,11 +31,14 @@ export default function Login({ onLogin }) {
         
         // Call the onLogin function passed from parent
         if (onLogin) {
-          onLogin(email);
+          onLogin(email, name);
         }
         
-        // For standalone component usage
+        // Important: Store auth status
         localStorage.setItem('mathCheckAuth', 'true');
+        localStorage.setItem('mathCheckUserEmail', email);
+        
+        // Redirect to the main application
         router.push('/dashboard');
       } else {
         setError('Please enter valid credentials');
@@ -48,29 +51,24 @@ export default function Login({ onLogin }) {
     }
   };
 
-  // Check if Tailwind classes apply, otherwise use fallback classes
-  const isTailwindWorking = typeof document !== 'undefined' && 
-    document.querySelector('html')?.classList.contains('js-focus-visible');
-
   return (
-    <div className={isTailwindWorking ? "min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#121212] text-white p-4" : "fallback-container"}>
+    <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-[#121212] text-white p-4">
       {/* Header */}
-      <header className={isTailwindWorking ? "mb-8" : "fallback-header"}>
-        <div className={isTailwindWorking ? "flex items-center" : "fallback-logo"}>
-          <div className={isTailwindWorking ? "text-2xl font-bold text-blue-500" : ""} style={{ color: '#3b82f6' }}>Math</div>
-          <div className={isTailwindWorking ? "text-2xl font-bold" : ""}>Check</div>
-          <div className={isTailwindWorking ? "ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md" : "fallback-logo-pro"}>PRO</div>
+      <header className="mb-8">
+        <div className="flex items-center">
+          <div className="text-2xl font-bold text-blue-500">Math</div>
+          <div className="text-2xl font-bold">Check</div>
+          <div className="ml-2 px-2 py-1 text-xs bg-blue-500 text-white rounded-md">PRO</div>
         </div>
       </header>
 
-      <main className={isTailwindWorking ? "max-w-md mx-auto" : "fallback-form"}>
-        <h1 className={isTailwindWorking ? "text-3xl font-bold mb-8" : ""} style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '2rem' }}>
+      <main className="max-w-md mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-center">
           {isRegister ? 'Create Account' : 'Welcome Back'}
         </h1>
         
         {error && (
-          <div className={isTailwindWorking ? "bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-md mb-6" : ""} 
-               style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgb(239, 68, 68)', color: 'rgb(239, 68, 68)', padding: '1rem', borderRadius: '0.375rem', marginBottom: '1.5rem' }}>
+          <div className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-md mb-6">
             {error}
           </div>
         )}
@@ -78,7 +76,7 @@ export default function Login({ onLogin }) {
         <form onSubmit={handleSubmit}>
           {isRegister && (
             <div className="mb-4">
-              <label htmlFor="name" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+              <label htmlFor="name" className="block text-sm text-gray-400 mb-2">
                 Full Name
               </label>
               <input
@@ -86,15 +84,15 @@ export default function Login({ onLogin }) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+                className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your name"
-                required
+                required={isRegister}
               />
             </div>
           )}
           
           <div className="mb-4">
-            <label htmlFor="email" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+            <label htmlFor="email" className="block text-sm text-gray-400 mb-2">
               Email
             </label>
             <input
@@ -102,14 +100,14 @@ export default function Login({ onLogin }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+              className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your email"
               required
             />
           </div>
           
           <div className="mb-6">
-            <label htmlFor="password" className={isTailwindWorking ? "block text-sm text-gray-400 mb-2" : ""} style={{ display: 'block', fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+            <label htmlFor="password" className="block text-sm text-gray-400 mb-2">
               Password
             </label>
             <input
@@ -117,7 +115,7 @@ export default function Login({ onLogin }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={isTailwindWorking ? "w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" : "fallback-input"}
+              className="w-full bg-[#2c3542] text-white p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder={isRegister ? "Create a password" : "Enter your password"}
               required
             />
@@ -126,9 +124,7 @@ export default function Login({ onLogin }) {
           <button
             type="submit"
             disabled={isLoading}
-            className={isTailwindWorking ? 
-              `w-full bg-blue-600 text-white p-3 rounded-md font-semibold ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'}` : 
-              "fallback-button"}
+            className={`w-full bg-blue-600 text-white p-3 rounded-md font-semibold ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-blue-700'}`}
           >
             {isLoading ? (
               <span className="flex items-center justify-center">
@@ -147,13 +143,13 @@ export default function Login({ onLogin }) {
         <div className="mt-4 text-center">
           <button 
             onClick={() => setIsRegister(!isRegister)}
-            className={isTailwindWorking ? "text-gray-400 hover:text-blue-500" : "fallback-link"}
+            className="text-gray-400 hover:text-blue-500"
           >
             {isRegister ? 'Already have an account? Log In' : "Don't have an account? Sign Up"}
           </button>
         </div>
         
-        <div className={isTailwindWorking ? "mt-12 text-center text-gray-500 text-sm" : ""} style={{ marginTop: '3rem', textAlign: 'center', color: '#6b7280', fontSize: '0.875rem' }}>
+        <div className="mt-12 text-center text-gray-500 text-sm">
           <p>MathCheck uses AI to analyze your mathematics papers and provide detailed feedback to improve your skills.</p>
         </div>
       </main>
