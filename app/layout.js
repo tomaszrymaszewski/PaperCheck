@@ -1,43 +1,27 @@
-import './globals.css';
-import { AuthProvider } from './components/AuthContext';
-import { Inter } from 'next/font/google';
+import './globals.css'
+import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'MathCheck - AI-Powered Math Analysis',
-  description: 'Analyze your math papers with AI',
-};
+  title: 'MathCheck - AI-powered Mathematics Analysis',
+  description: 'Get detailed feedback on your math papers with MathCheck',
+}
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <style dangerouslySetInnerHTML={{ __html: `
-          body {
-            background-color: #121212;
-            color: white;
-            font-family: 'Inter', sans-serif;
-          }
-          
-          button, select, input {
-            background-color: #2c3542;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
-          }
-          
-          button:hover {
-            background-color: #0073f5;
-          }
-        `}} />
+        {/* Add this script to detect if JS is working, which can help with fallbacks */}
+        <script dangerouslySetInnerHTML={{ 
+          __html: `
+            document.documentElement.classList.add('js-focus-visible');
+          `
+        }} />
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        {children}
       </body>
     </html>
-  );
+  )
 }
