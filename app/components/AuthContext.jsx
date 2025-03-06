@@ -1,9 +1,14 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { auth, signInWithGoogle, logoutUser } from '../firebase';
+import { 
+  GoogleAuthProvider, 
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from 'firebase/auth';
+import { auth } from '../firebase';
 
 // Create Auth context
 const AuthContext = createContext({
@@ -22,6 +27,11 @@ export function AuthProvider({ children }) {
 
   // Listen for auth state changes
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       if (authUser) {
         setUser({
@@ -42,11 +52,10 @@ export function AuthProvider({ children }) {
   // Sign in handler
   const signIn = async () => {
     try {
-      const result = await signInWithGoogle();
-      if (result.success) {
-        router.push('/dashboard');
-      }
-      return result;
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      router.push('/dashboard');
+      return { success: true, user: result.user };
     } catch (error) {
       console.error("Sign in error:", error);
       return { success: false, error };
@@ -56,7 +65,7 @@ export function AuthProvider({ children }) {
   // Logout handler
   const logout = async () => {
     try {
-      await logoutUser();
+      await signOut(auth);
       router.push('/');
       return { success: true };
     } catch (error) {
