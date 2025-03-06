@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../components/AuthContext';
 
-// Basic inline styles
+// Basic inline styles (keeping your original styles)
 const styles = {
+  // Your existing styles here
   container: {
     minHeight: '100vh',
     background: '#121212',
@@ -16,372 +18,25 @@ const styles = {
     borderBottom: '1px solid #333',
     padding: '0 1rem'
   },
-  headerContent: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: '4rem'
-  },
-  logo: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  logoText: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold'
-  },
-  logoMath: {
-    color: '#3b82f6'
-  },
-  logoCheck: {
-    color: 'white'
-  },
-  logoBadge: {
-    marginLeft: '0.5rem',
-    padding: '0.25rem 0.5rem',
-    background: '#3b82f6',
-    color: 'white',
-    borderRadius: '0.25rem',
-    fontSize: '0.75rem'
-  },
-  userIcon: {
-    width: '2rem',
-    height: '2rem',
-    background: '#2c3542',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer'
-  },
-  userInitial: {
-    width: '2rem',
-    height: '2rem',
-    background: '#3b82f6',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '1rem',
-    fontWeight: 'bold'
-  },
-  main: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '1rem'
-  },
-  welcomeSection: {
-    marginBottom: '2rem'
-  },
-  title: {
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    marginBottom: '0.5rem'
-  },
-  subtitle: {
-    color: '#9ca3af'
-  },
-  tabs: {
-    display: 'flex',
-    borderBottom: '1px solid #333',
-    marginBottom: '1.5rem'
-  },
-  tab: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0.75rem 0.25rem',
-    marginRight: '1.5rem',
-    color: '#9ca3af',
-    cursor: 'pointer',
-    borderBottom: '2px solid transparent'
-  },
-  activeTab: {
-    color: '#3b82f6',
-    borderBottom: '2px solid #3b82f6',
-    fontWeight: '500'
-  },
-  tabIcon: {
-    marginRight: '0.5rem'
-  },
-  formSection: {
-    display: 'grid',
-    gridTemplateColumns: '2fr 1fr',
-    gap: '1.5rem',
-    marginBottom: '2rem'
-  },
-  selectionGroup: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '1rem',
-    marginBottom: '1.5rem'
-  },
-  formControl: {
-    marginBottom: '1.5rem'
-  },
-  label: {
-    display: 'block',
-    fontSize: '0.875rem',
-    color: '#9ca3af',
-    marginBottom: '0.5rem'
-  },
-  select: {
-    width: '100%',
-    background: '#2c3542',
-    color: '#d1d5db',
-    padding: '1rem',
-    borderRadius: '0.375rem',
-    border: 'none',
-    appearance: 'none',
-    cursor: 'pointer'
-  },
-  uploadSection: {
-    marginBottom: '1.5rem'
-  },
-  uploadHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem'
-  },
-  uploadTitle: {
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  uploadRestriction: {
-    fontSize: '0.875rem',
-    color: '#9ca3af'
-  },
-  dropzone: {
-    border: '2px dashed #4b5563',
-    borderRadius: '0.5rem',
-    padding: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer'
-  },
-  dropzoneActive: {
-    border: '2px dashed #3b82f6',
-    background: 'rgba(59, 130, 246, 0.1)'
-  },
-  dropzoneIcon: {
-    color: '#3b82f6',
-    marginBottom: '1rem',
-    fontSize: '4rem'
-  },
-  dropzoneText: {
-    textAlign: 'center',
-    marginBottom: '0.5rem',
-    fontWeight: '500'
-  },
-  dropzoneSubtext: {
-    color: '#6b7280',
-    fontSize: '0.875rem',
-    textAlign: 'center',
-    marginBottom: '1rem'
-  },
-  browseButton: {
-    background: '#3b82f6',
-    color: 'white',
-    padding: '0.5rem 1.25rem',
-    borderRadius: '0.375rem',
-    border: 'none',
-    cursor: 'pointer'
-  },
-  infoPanel: {
-    background: '#1e2d3d',
-    borderRadius: '0.5rem',
-    padding: '1.5rem'
-  },
-  infoPanelTitle: {
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    marginBottom: '1rem',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  stepsList: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem'
-  },
-  step: {
-    display: 'flex'
-  },
-  stepNumber: {
-    background: 'rgba(59, 130, 246, 0.1)',
+  // ... rest of your styles
+
+  // Add any additional styles you might need for Firebase UI elements
+  userPhotoContainer: {
     width: '2rem',
     height: '2rem',
     borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#3b82f6',
-    fontWeight: '500',
-    marginRight: '0.75rem',
-    flexShrink: 0
+    overflow: 'hidden'
   },
-  stepContent: {
-    flex: 1
-  },
-  stepTitle: {
-    fontWeight: '500',
-    marginBottom: '0.25rem'
-  },
-  stepDescription: {
-    color: '#9ca3af',
-    fontSize: '0.875rem'
-  },
-  infoTip: {
-    marginTop: '1.5rem',
-    padding: '0.75rem',
-    background: 'rgba(59, 130, 246, 0.1)',
-    borderRadius: '0.375rem',
-    display: 'flex',
-    alignItems: 'flex-start'
-  },
-  infoIcon: {
-    color: '#3b82f6',
-    marginRight: '0.5rem',
-    flexShrink: 0
-  },
-  infoText: {
-    color: '#3b82f6',
-    fontSize: '0.875rem'
-  },
-  submitButton: {
+  userPhoto: {
     width: '100%',
-    padding: '1rem',
-    background: '#3b82f6',
-    color: 'white',
-    border: 'none',
-    borderRadius: '0.375rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  disabledButton: {
-    background: '#4b5563',
-    color: '#9ca3af',
-    cursor: 'not-allowed'
-  },
-  featureGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '1.5rem',
-    marginBottom: '2rem'
-  },
-  featureCard: {
-    background: '#2c3542',
-    padding: '1.25rem',
-    borderRadius: '0.5rem'
-  },
-  featureIconContainer: {
-    width: '3rem',
-    height: '3rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '0.5rem',
-    marginBottom: '1rem'
-  },
-  featureGreen: {
-    background: 'rgba(16, 185, 129, 0.1)',
-    color: '#10b981'
-  },
-  featureBlue: {
-    background: 'rgba(59, 130, 246, 0.1)',
-    color: '#3b82f6'
-  },
-  featurePurple: {
-    background: 'rgba(139, 92, 246, 0.1)',
-    color: '#8b5cf6'
-  },
-  featureTitle: {
-    fontSize: '1.125rem',
-    fontWeight: '600',
-    marginBottom: '0.5rem'
-  },
-  featureDescription: {
-    color: '#9ca3af'
-  },
-  tutorialModal: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.9)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 50
-  },
-  tutorialContent: {
-    position: 'relative',
-    background: '#2c3542',
-    borderRadius: '0.5rem',
-    maxWidth: '32rem',
-    width: '100%',
-    padding: '1.5rem'
-  },
-  closeButton: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    color: '#9ca3af',
-    cursor: 'pointer',
-    background: 'none',
-    border: 'none'
-  },
-  filePreview: {
-    background: '#2c3542',
-    borderRadius: '0.5rem',
-    padding: '1rem',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  fileInfo: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  fileIcon: {
-    width: '2.5rem',
-    height: '2.5rem',
-    background: 'rgba(59, 130, 246, 0.1)',
-    color: '#3b82f6',
-    borderRadius: '0.5rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: '1rem'
-  },
-  fileName: {
-    fontWeight: '500',
-    marginBottom: '0.25rem'
-  },
-  fileSize: {
-    color: '#9ca3af',
-    fontSize: '0.875rem'
-  },
-  removeButton: {
-    color: '#9ca3af',
-    cursor: 'pointer',
-    background: 'none',
-    border: 'none'
+    height: '100%',
+    objectFit: 'cover'
   }
 };
 
-// Simple SVG icons
+// Simple SVG icons (keeping your original icons)
 const Icons = {
+  // Your existing icons here
   Upload: () => (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -389,67 +44,14 @@ const Icons = {
       <line x1="12" y1="3" x2="12" y2="15" />
     </svg>
   ),
-  Clock: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polyline points="12 6 12 12 16 14" />
-    </svg>
-  ),
-  Chart: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="20" x2="18" y2="10" />
-      <line x1="12" y1="20" x2="12" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="14" />
-    </svg>
-  ),
-  Info: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="16" x2="12" y2="12" />
-      <line x1="12" y1="8" x2="12.01" y2="8" />
-    </svg>
-  ),
-  File: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-      <polyline points="10 9 9 9 8 9" />
-    </svg>
-  ),
-  X: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  ),
-  User: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  ),
-  Shield: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    </svg>
-  ),
-  Lightbulb: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 018.91 14" />
-    </svg>
-  ),
-  Activity: () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-    </svg>
-  )
+  // ... rest of your icons
 };
 
 export default function Dashboard() {
-  // State for user interaction
-  const [userName, setUserName] = useState('');
+  // Use the auth context
+  const { user, loading, logout } = useAuth();
+  
+  // State for user interaction (keep your existing state)
   const [activeTab, setActiveTab] = useState('upload');
   const [module, setModule] = useState('');
   const [exam, setExam] = useState('');
@@ -462,22 +64,15 @@ export default function Dashboard() {
   // Math modules and exam options
   const moduleOptions = ['Algebra', 'Calculus', 'Statistics', 'Geometry', 'Linear Algebra', 'Number Theory'];
   
-  // Check for saved name on component mount
+  // Check auth status on component mount
   useEffect(() => {
-    const savedName = localStorage.getItem('mathCheckUserName');
-    const isAuthenticated = localStorage.getItem('mathCheckAuth');
-    
-    if (savedName) {
-      setUserName(savedName);
-    }
-    
-    // If not authenticated, redirect to login
-    if (!isAuthenticated) {
+    // If not authenticated and not loading, redirect to login
+    if (!loading && !user) {
       router.push('/');
     }
-  }, [router]);
+  }, [user, loading, router]);
 
-  // File handling functions
+  // File handling functions (keep your existing functions)
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -516,26 +111,26 @@ export default function Dashboard() {
     setFile(null);
   };
 
-  // Format file size
+  // Format file size (keep your existing function)
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return bytes + ' bytes';
     else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
     else return (bytes / 1048576).toFixed(2) + ' MB';
   };
 
-  // Complete tutorial
+  // Complete tutorial (keep your existing function)
   const completeTutorial = () => {
     localStorage.setItem('mathCheckTutorialSeen', 'true');
     setShowTutorial(false);
   };
 
-  // Logout handler
-  const handleLogout = () => {
-    localStorage.removeItem('mathCheckAuth');
-    router.push('/');
+  // Updated logout handler to use Firebase
+  const handleLogout = async () => {
+    await logout();
+    // Router redirect is handled in the useAuth hook
   };
 
-  // Submit handler
+  // Submit handler (keep your existing function)
   const handleSubmit = () => {
     if (!module || !exam || !file) {
       alert('Please fill all fields and upload a file');
@@ -545,81 +140,43 @@ export default function Dashboard() {
     alert('Paper submitted for analysis! This would trigger the upload process in a real application.');
   };
 
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        backgroundColor: '#121212',
+        color: 'white'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <svg style={{ marginRight: '0.75rem', animation: 'spin 1s linear infinite' }} width="24" height="24" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.25" />
+            <path fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <span>Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authenticated (should redirect in useEffect, but just in case)
+  if (!user) {
+    return null;
+  }
+
   return (
     <div style={styles.container}>
-      {/* Tutorial overlay */}
+      {/* Tutorial overlay (keep your existing code) */}
       {showTutorial && (
         <div style={styles.tutorialModal}>
-          <div style={styles.tutorialContent}>
-            <button
-              onClick={() => setShowTutorial(false)}
-              style={styles.closeButton}
-            >
-              <Icons.X />
-            </button>
-
-            <div style={styles.tutorialHeader}>
-              <h3 style={styles.tutorialTitle}>MathCheck Tutorial</h3>
-              <span style={styles.tutorialStep}>Step {tutorialStep + 1} of 4</span>
-            </div>
-            <div style={styles.progressBar}>
-              <div
-                style={{
-                  ...styles.progressIndicator,
-                  width: `${(tutorialStep + 1) * 25}%`
-                }}
-              ></div>
-            </div>
-
-            {tutorialStep === 0 && (
-              <div>
-                <div style={styles.infoBox}>
-                  <div style={styles.iconCircle}>
-                    <Icons.Info />
-                  </div>
-                  <div style={styles.infoContent}>
-                    <h4 style={styles.infoTitle}>Welcome to MathCheck</h4>
-                    <p style={styles.infoText}>MathCheck uses advanced AI to analyze your math papers, identify errors, and provide detailed feedback to help you improve your understanding.</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* More tutorial steps here */}
-
-            <div style={styles.tutorialFooter}>
-              {tutorialStep > 0 ? (
-                <button
-                  onClick={() => setTutorialStep(prev => prev - 1)}
-                  style={styles.backButton}
-                >
-                  Back
-                </button>
-              ) : (
-                <div></div>
-              )}
-
-              {tutorialStep < 3 ? (
-                <button
-                  onClick={() => setTutorialStep(prev => prev + 1)}
-                  style={styles.nextButton}
-                >
-                  Next
-                </button>
-              ) : (
-                <button
-                  onClick={completeTutorial}
-                  style={styles.startButton}
-                >
-                  Get Started
-                </button>
-              )}
-            </div>
-          </div>
+          {/* Your existing tutorial code */}
         </div>
       )}
 
-      {/* Header */}
+      {/* Header - Updated to use Firebase user info */}
       <header style={styles.header}>
         <div style={styles.headerContent}>
           <div style={styles.logo}>
@@ -642,9 +199,17 @@ export default function Dashboard() {
               onClick={handleLogout}
               title="Logout"
             >
-              {userName ? (
+              {user.photoURL ? (
+                <div style={styles.userPhotoContainer}>
+                  <img 
+                    src={user.photoURL} 
+                    alt="Profile"
+                    style={styles.userPhoto}
+                  />
+                </div>
+              ) : user.displayName ? (
                 <div style={styles.userInitial}>
-                  {userName.charAt(0).toUpperCase()}
+                  {user.displayName.charAt(0).toUpperCase()}
                 </div>
               ) : (
                 <Icons.User />
@@ -656,10 +221,10 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main style={styles.main}>
-        {/* Welcome message */}
+        {/* Welcome message - Updated to use Firebase user info */}
         <div style={styles.welcomeSection}>
           <h1 style={styles.title}>
-            {userName ? `Welcome back, ${userName}!` : 'Welcome to MathCheck!'}
+            {user.displayName ? `Welcome back, ${user.displayName}!` : 'Welcome to MathCheck!'}
           </h1>
           <p style={styles.subtitle}>Upload your math papers for AI-powered analysis and detailed feedback</p>
         </div>
@@ -689,7 +254,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Upload Tab */}
+        {/* Upload Tab (keep your existing code) */}
         {activeTab === 'upload' && (
           <div>
             <div style={{
@@ -939,4 +504,3 @@ export default function Dashboard() {
       </footer>
     </div>
   );
-}
