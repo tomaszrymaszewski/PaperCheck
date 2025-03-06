@@ -1,108 +1,74 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { auth, signInWithGoogle, logoutUser } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
-// Helper functions for cookie management
-const setCookie = (name, value, days) => {
-  let expires = "";
-  if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = "; expires=" + date.toUTCString();
-  }
-  document.cookie = name + "=" + (value || "") + expires + "; path=/";
-};
-
-const getCookie = (name) => {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
-
-const eraseCookie = (name) => {
-  document.cookie = name + '=; Max-Age=-99999999; path=/';
-};
-
-// Create the auth context
+// Create auth context
 const AuthContext = createContext();
 
-// Export the provider component
+// Auth provider component
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  // Check for authentication status on mount
   useEffect(() => {
-    // Check if we're in a browser environment
-    if (typeof window !== 'undefined') {
-      // Check cookies and localStorage for auth status
-      const isAuthenticatedCookie = getCookie('mathCheckAuth') === 'true';
-      const isAuthenticatedStorage = localStorage.getItem('mathCheckAuth') === 'true';
-      const isAuthenticated = isAuthenticatedCookie || isAuthenticatedStorage;
-      
-      const userName = getCookie('mathCheckUserName') || localStorage.getItem('mathCheckUserName');
-      const userEmail = getCookie('mathCheckUserEmail') || localStorage.getItem('mathCheckUserEmail') || 'user@example.com';
-      
-      if (isAuthenticated && userName) {
-        setUser({ name: userName, email: userEmail });
-      } else {
-        setUser(null);
-      }
-    }
-    
-    setLoading(false);
+    // Subscribe to auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+
+    // Cleanup subscription
+    return () => unsubscribe();
   }, []);
 
-  // Login function
-  const login = (email, name) => {
-    if (typeof window !== 'undefined') {
-      // Set in both localStorage and cookies for middleware support
-      localStorage.setItem('mathCheckAuth', 'true');
-      localStorage.setItem('mathCheckUserEmail', email);
-      setCookie('mathCheckAuth', 'true', 7); // 7 days
-      setCookie('mathCheckUserEmail', email, 7);
-      
-      if (name) {
-        localStorage.setItem('mathCheckUserName', name);
-        setCookie('mathCheckUserName', name, 7);
+  // Sign in handler
+  const signIn = async () => {
+    try {
+      setLoading(true);
+      const result = await signInWithGoogle();
+      if (result.success) {
+        router.push('/dashboard');
       }
-      
-      setUser({ 
-        name: name || getCookie('mathCheckUserName') || localStorage.getItem('mathCheckUserName') || 'User', 
-        email 
-      });
+      return result;
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Logout function
-  const logout = () => {
-    if (typeof window !== 'undefined') {
-      // Clear from both localStorage and cookies
-      localStorage.removeItem('mathCheckAuth');
-      eraseCookie('mathCheckAuth');
-      
-      // We don't remove the username so returning users still see their name
-      // But we do need to set user state to null
-      setUser(null);
+  // Logout handler
+  const logout = async () => {
+    try {
+      setLoading(true);
+      const result = await logoutUser();
+      if (result.success) {
+        router.push('/');
+      }
+      return result;
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  // Context value
+  const value = {
+    user,
+    loading,
+    signIn,
+    logout,
+    isAuthenticated: !!user,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // Custom hook to use auth context
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
