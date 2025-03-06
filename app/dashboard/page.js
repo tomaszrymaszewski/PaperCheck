@@ -660,7 +660,7 @@ export default function Dashboard() {
           <div style={styles.logo}>
             <div style={{...styles.logoText, ...styles.logoCheck}}>Math</div>
             <div style={{...styles.logoText, ...styles.logoMath}}>Check</div>
-            <div style={styles.logoBadge}>PRO</div>
+            <div style={styles.logoBadge}>BETA</div>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
             <button 
