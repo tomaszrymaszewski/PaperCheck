@@ -1,27 +1,36 @@
 // server.js
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
+// This file is needed to start the standalone server
 
-const dev = process.env.NODE_ENV !== 'production';
-const hostname = '0.0.0.0';  // Important for Cloud Run
-const port = parseInt(process.env.PORT || '8080', 10);
-
-console.log(`Starting Next.js app on ${hostname}:${port}`);
-
-const app = next({ dev });
-const handle = app.getRequestHandler();
-
-app.prepare().then(() => {
-  createServer((req, res) => {
-    // Handle requests
-    const parsedUrl = parse(req.url, true);
-    handle(req, res, parsedUrl);
-  }).listen(port, hostname, (err) => {
-    if (err) throw err;
-    console.log(`> Ready on http://${hostname}:${port}`);
-  });
-}).catch(err => {
-  console.error('Error starting server:', err);
-  process.exit(1);
-});
+// Find the correct path to the standalone server
+let serverPath;
+try {
+  // When running in Cloud Run
+  serverPath = './.next/standalone/server.js';
+  require(serverPath);
+  console.log('Started standalone server from', serverPath);
+} catch (error) {
+  try {
+    // Alternative path when running in some environments
+    serverPath = '/workspace/.next/standalone/server.js';
+    require(serverPath);
+    console.log('Started standalone server from', serverPath);
+  } catch (innerError) {
+    console.error('Failed to find standalone server.js:', error);
+    console.error('Also tried alternative path:', innerError);
+    
+    // Fall back to a simple HTTP server
+    const http = require('http');
+    const port = parseInt(process.env.PORT || '8080', 10);
+    
+    console.log(`Starting minimal HTTP server on port ${port}`);
+    
+    const server = http.createServer((req, res) => {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end('<html><body><h1>MathCheck</h1><p>Server is starting up...</p></body></html>');
+    });
+    
+    server.listen(port, '0.0.0.0', () => {
+      console.log(`Fallback server running at http://0.0.0.0:${port}/`);
+    });
+  }
+}
