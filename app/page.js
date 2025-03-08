@@ -86,7 +86,7 @@ export default function Home() {
               borderRadius: '0.25rem',
               fontSize: '0.75rem',
               fontWeight: 'bold'
-            }}>PRO</span>
+            }}>BETA</span>
           </div>
         </div>
       </header>

@@ -1,9 +1,7 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../components/AuthContext';
 
 // Basic inline styles
 const styles = {
@@ -69,17 +67,6 @@ const styles = {
     fontSize: '1rem',
     fontWeight: 'bold'
   },
-  userPhotoContainer: {
-    width: '2rem',
-    height: '2rem',
-    borderRadius: '50%',
-    overflow: 'hidden'
-  },
-  userPhoto: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
-  },
   main: {
     maxWidth: '1200px',
     margin: '0 auto',
@@ -104,16 +91,17 @@ const styles = {
   tab: {
     display: 'flex',
     alignItems: 'center',
-    padding: '0.75rem 0.25rem',
+    padding: '0.75rem 0.75rem',
     marginRight: '1.5rem',
     color: '#9ca3af',
     cursor: 'pointer',
-    borderBottom: '2px solid transparent'
+    borderBottom: '2px solid transparent',
+    backgroundColor: '#353535',
+    fontWeight: '500'
   },
   activeTab: {
     color: '#3b82f6',
-    borderBottom: '2px solid #3b82f6',
-    fontWeight: '500'
+    backgroundColor: '#404040',
   },
   tabIcon: {
     marginRight: '0.5rem'
@@ -461,10 +449,8 @@ const Icons = {
 };
 
 export default function Dashboard() {
-  // Use auth context for Firebase Authentication
-  const { user, loading, logout } = useAuth();
-  
   // State for user interaction
+  const [userName, setUserName] = useState('');
   const [activeTab, setActiveTab] = useState('upload');
   const [module, setModule] = useState('');
   const [exam, setExam] = useState('');
@@ -477,13 +463,20 @@ export default function Dashboard() {
   // Math modules and exam options
   const moduleOptions = ['Algebra', 'Calculus', 'Statistics', 'Geometry', 'Linear Algebra', 'Number Theory'];
   
-  // Check auth on component mount
+  // Check for saved name on component mount
   useEffect(() => {
-    // If not authenticated and not loading, redirect to login
-    if (!loading && !user) {
+    const savedName = localStorage.getItem('mathCheckUserName');
+    const isAuthenticated = localStorage.getItem('mathCheckAuth');
+    
+    if (savedName) {
+      setUserName(savedName);
+    }
+    
+    // If not authenticated, redirect to login
+    if (!isAuthenticated) {
       router.push('/');
     }
-  }, [user, loading, router]);
+  }, [router]);
 
   // File handling functions
   const handleDragOver = (e) => {
@@ -537,10 +530,10 @@ export default function Dashboard() {
     setShowTutorial(false);
   };
 
-  // Updated logout handler to use Firebase
-  const handleLogout = async () => {
-    await logout();
-    // Router redirect is handled in the useAuth hook
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('mathCheckAuth');
+    router.push('/');
   };
 
   // Submit handler
@@ -552,33 +545,6 @@ export default function Dashboard() {
     
     alert('Paper submitted for analysis! This would trigger the upload process in a real application.');
   };
-
-  // Show loading state while checking authentication
-  if (loading) {
-    return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        backgroundColor: '#121212',
-        color: 'white'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <svg style={{ marginRight: '0.75rem' }} width="24" height="24" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.25" />
-            <path fill="none" stroke="#3b82f6" strokeWidth="4" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <span>Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // If not authenticated (should redirect in useEffect, but just in case)
-  if (!user) {
-    return null;
-  }
 
   return (
     <div style={styles.container}>
@@ -654,7 +620,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Header - Updated to use Firebase user info */}
+      {/* Header */}
       <header style={styles.header}>
         <div style={styles.headerContent}>
           <div style={styles.logo}>
@@ -677,17 +643,9 @@ export default function Dashboard() {
               onClick={handleLogout}
               title="Logout"
             >
-              {user.photoURL ? (
-                <div style={styles.userPhotoContainer}>
-                  <img 
-                    src={user.photoURL} 
-                    alt="Profile"
-                    style={styles.userPhoto}
-                  />
-                </div>
-              ) : user.displayName ? (
+              {userName ? (
                 <div style={styles.userInitial}>
-                  {user.displayName.charAt(0).toUpperCase()}
+                  {userName.charAt(0).toUpperCase()}
                 </div>
               ) : (
                 <Icons.User />
@@ -699,10 +657,10 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main style={styles.main}>
-        {/* Welcome message - Updated to use Firebase user info */}
+        {/* Welcome message */}
         <div style={styles.welcomeSection}>
           <h1 style={styles.title}>
-            {user.displayName ? `Welcome back, ${user.displayName}!` : 'Welcome to MathCheck!'}
+            {userName ? `Welcome back, ${userName}!` : 'Welcome to MathCheck!'}
           </h1>
           <p style={styles.subtitle}>Upload your math papers for AI-powered analysis and detailed feedback</p>
         </div>
