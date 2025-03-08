@@ -4,7 +4,8 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  output: 'standalone'
+  // Remove the standalone output setting or set it correctly
+  // output: 'standalone' 
 };
 
 module.exports = nextConfig;
