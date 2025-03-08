@@ -302,7 +302,6 @@ export default function Home() {
                 borderRadius: '0.375rem',
                 fontWeight: 'bold',
                 cursor: isLoading ? 'not-allowed' : 'pointer',
-                opacity: isLoading ? 0.7 : 1,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
