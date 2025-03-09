@@ -1,11 +1,27 @@
 {
-  "name": "mathcheck-minimal",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "mathcheck",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "node index.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "lint": "next lint"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "firebase": "9.15.0",
+    "next": "13.5.8",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "13.5.8",
+    "postcss": "8.4.35",
+    "tailwindcss": "3.4.17"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
